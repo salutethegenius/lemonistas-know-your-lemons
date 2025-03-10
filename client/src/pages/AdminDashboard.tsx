@@ -387,7 +387,12 @@ export default function AdminDashboard() {
                             {formatDate(selfie.createdAt)}
                           </p>
                           <div className="flex gap-2">
-                            <Button variant="outline" size="sm" className="text-xs bg-white">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="text-xs bg-white"
+                              onClick={() => setViewingSelfie(selfie)}
+                            >
                               View
                             </Button>
                             <Button variant="destructive" size="sm" className="text-xs">
@@ -509,6 +514,69 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Selfie Details Modal */}
+      {viewingSelfie && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-lg mx-auto">
+            <CardHeader>
+              <CardTitle className="text-lg">Selfie Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-6">
+                <div className="w-full">
+                  {viewingSelfie.photoUrl ? (
+                    <img 
+                      src={viewingSelfie.photoUrl} 
+                      alt={`Selfie ${viewingSelfie.id}`}
+                      className="rounded-md w-full max-h-[400px] object-contain mx-auto"
+                    />
+                  ) : (
+                    <div className="rounded-md w-full h-64 bg-gray-200 flex items-center justify-center">
+                      <p className="text-gray-500">No image available</p>
+                    </div>
+                  )}
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-bold text-xl">
+                      Selfie #{viewingSelfie.id}
+                    </h3>
+                    <p className="text-gray-500">{viewingSelfie.location}</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-sm font-medium">Caption</p>
+                    <p className="text-sm mt-1">{viewingSelfie.caption}</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-sm font-medium">Team Member</p>
+                    <p className="text-sm mt-1">ID: {viewingSelfie.teamMemberId}</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-sm font-medium">Uploaded On</p>
+                    <p className="text-sm mt-1">{formatDate(viewingSelfie.createdAt)}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-2 mt-6">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setViewingSelfie(null)}
+                >
+                  Close
+                </Button>
+                <Button variant="destructive">
+                  Delete Selfie
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
