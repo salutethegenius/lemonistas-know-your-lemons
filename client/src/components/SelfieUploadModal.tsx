@@ -34,6 +34,7 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
   const form = useForm<SelfieFormData>({
     resolver: zodResolver(selfieUploadSchema),
     defaultValues: {
+      teamMemberId: teamMemberId,
       name: "",
       email: "",
       phone: "",
@@ -93,7 +94,7 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md relative overflow-hidden">
         <div className="bg-[#FFFE77] p-4 flex justify-between items-center">
-          <h2 className="text-xl font-poppins font-bold text-[#292929]">Share Your Selfie!</h2>
+          <h2 className="text-xl font-poppins font-bold text-[#292929]">Selfie with {teamMemberName}</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
             <X className="h-5 w-5" />
           </Button>
