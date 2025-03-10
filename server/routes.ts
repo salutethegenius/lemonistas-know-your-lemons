@@ -1,7 +1,7 @@
 import type { Express, Request, Response } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { applicantFormSchema } from "@shared/schema";
+import { applicantFormSchema, selfieFormSchema } from "@shared/schema";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -97,6 +97,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(201).json(newApplicant);
     } catch (error) {
       res.status(500).json({ message: "Error creating applicant" });
+    }
+  });
+  
+  // Selfie routes
+  app.post("/api/selfies", async (req: Request, res: Response) => {
+    try {
+      const parsedBody = selfieFormSchema.safeParse(req.body);
+      
+      if (!parsedBody.success) {
+        return res.status(400).json({ 
+          message: "Invalid selfie data", 
+          errors: parsedBody.error.errors 
+        });
+      }
+      
+      // Verify team member exists
+      const teamMember = await storage.getTeamMember(parsedBody.data.teamMemberId);
+      if (!teamMember) {
+        return res.status(404).json({ message: "Team member not found" });
+      }
+      
+      const selfieData = {
+        ...parsedBody.data,
+        submittedAt: new Date()
+      };
+      
+      const newSelfie = await storage.createSelfie(selfieData);
+      res.status(201).json(newSelfie);
+    } catch (error) {
+      console.error("Selfie upload error:", error);
+      res.status(500).json({ message: "Error uploading selfie" });
     }
   });
 
