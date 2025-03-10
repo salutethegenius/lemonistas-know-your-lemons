@@ -97,7 +97,7 @@ export default function JoinFormModal({ onClose, onSuccess }: JoinFormModalProps
                     <User className="h-16 w-16 text-gray-400" />
                   )}
                 </div>
-                <label htmlFor="photo-upload" className="bg-[#FB4694] text-white font-poppins font-medium px-4 py-2 rounded-lg cursor-pointer hover:bg-opacity-90 transition flex items-center gap-2">
+                <label htmlFor="photo-upload" className="bg-[#7D7B7B] text-white font-poppins font-medium px-4 py-2 rounded-lg cursor-pointer hover:bg-opacity-90 transition flex items-center gap-2">
                   <Upload className="h-4 w-4" />
                   Upload Photo
                 </label>
@@ -233,7 +233,7 @@ export default function JoinFormModal({ onClose, onSuccess }: JoinFormModalProps
               <div className="pt-4">
                 <Button 
                   type="submit" 
-                  className="w-full bg-[#FB4694] text-white font-poppins font-semibold py-3 rounded-xl hover:bg-opacity-90 transition"
+                  className="w-full bg-[#4F2C4C] text-white font-poppins font-semibold py-3 rounded-xl hover:bg-opacity-90 transition"
                   disabled={mutation.isPending}
                 >
                   {mutation.isPending ? "Submitting..." : "Submit Application"}

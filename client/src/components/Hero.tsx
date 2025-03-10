@@ -4,7 +4,7 @@ interface HeroProps {
 
 export default function Hero({ onJoinClick }: HeroProps) {
   return (
-    <header className="relative bg-[#FB4694]">
+    <header className="relative bg-[#4F2C4C]">
       <div className="container mx-auto px-4 py-12 md:py-20">
         <div className="flex flex-col items-center">
           <div className="text-center mb-8">

@@ -25,8 +25,8 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
           ) : (
             // Team member cards
             teamMembers.map((member) => (
-              <Link key={member.id} href={`/team-member/${member.id}`}>
-                <a className="block">
+              <div key={member.id} className="block">
+                <Link href={`/team-member/${member.id}`}>
                   <Card className="team-card transition-all duration-300 bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden cursor-pointer h-full">
                     <div className="h-64 overflow-hidden">
                       <img 
@@ -39,13 +39,13 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
                       <h3 className="font-poppins font-semibold text-xl mb-1">{member.name}</h3>
                       <p className="text-[#7D7B7B] text-sm">{member.role}</p>
                       <div className="flex items-center mt-3">
-                        <span className="inline-block w-2 h-2 rounded-full bg-[#FB4694] mr-2"></span>
+                        <span className="inline-block w-2 h-2 rounded-full bg-[#7D7B7B] mr-2"></span>
                         <span className="text-sm">{member.location}</span>
                       </div>
                     </CardContent>
                   </Card>
-                </a>
-              </Link>
+                </Link>
+              </div>
             ))
           )}
           
