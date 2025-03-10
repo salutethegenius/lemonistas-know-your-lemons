@@ -13,20 +13,7 @@ import Footer from "@/components/Footer";
 
 // Function to get the appropriate image URL for a team member
 function getTeamMemberImage(member: TeamMember): string {
-  // For the original 4 members (gwen, ivalee, portia, sam), use name-based URLs
-  const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
-  const nameLower = member.name.toLowerCase();
-  
-  if (originalMembers.includes(nameLower)) {
-    return `/api/team-members/${nameLower}`;
-  }
-  
-  // For approved members with direct URLs, use those
-  if (member.imageUrl && (member.imageUrl.startsWith('http://') || member.imageUrl.startsWith('https://'))) {
-    return member.imageUrl;
-  }
-  
-  // Fallback to the image helper for any other case
+  // Simply use the centralized helper function to ensure consistent image URLs across the app
   return getTeamMemberImageUrl(member);
 }
 
