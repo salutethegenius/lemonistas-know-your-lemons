@@ -149,13 +149,19 @@ export default function TeamMemberDetail() {
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-2/5">
                   <div className="rounded-xl overflow-hidden shadow-lg border border-gray-100">
-                    {member.imageUrl && (
-                      <img 
-                        src={member.imageUrl} 
-                        alt={member.name} 
-                        className="w-full h-auto object-cover aspect-square" 
-                      />
-                    )}
+                    <img 
+                      src={member.imageUrl ? member.imageUrl : `/api/team-members/${member.name.toLowerCase()}`} 
+                      alt={member.name} 
+                      className="w-full h-auto object-cover aspect-square" 
+                      onError={(e) => {
+                        // If the image fails to load, try the specific name-based image
+                        const target = e.target as HTMLImageElement;
+                        if (target.src !== `/api/team-members/${member.name.toLowerCase()}`) {
+                          console.log("Image failed to load, using API endpoint:", `/api/team-members/${member.name.toLowerCase()}`);
+                          target.src = `/api/team-members/${member.name.toLowerCase()}`;
+                        }
+                      }}
+                    />
                   </div>
 
                   <div className="mt-6">
