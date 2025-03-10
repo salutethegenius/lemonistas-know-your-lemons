@@ -153,6 +153,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Approve an applicant to become a team member
+  app.post("/api/applicants/:id/approve", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid applicant ID" });
+      }
+      
+      // First get the applicant data
+      const applicant = await storage.getApplicant(id);
+      if (!applicant) {
+        return res.status(404).json({ message: "Applicant not found" });
+      }
+      
+      // Create a new team member from the applicant data
+      const newTeamMember = await storage.createTeamMember({
+        name: `${applicant.firstName} ${applicant.lastName}`,
+        role: "Educator",
+        location: applicant.location,
+        bio: applicant.whyJoin,
+        focus: "Health Education",
+        joined: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
+        imageUrl: applicant.photoUrl || ""
+      });
+
+      // Optionally, we could delete or mark the applicant as approved
+      // For now, we'll leave the applicant in the system
+      
+      res.status(200).json({ 
+        success: true, 
+        message: "Applicant approved and added as team member",
+        teamMember: newTeamMember
+      });
+    } catch (error) {
+      console.error("Error approving applicant:", error);
+      res.status(500).json({ message: "Error approving applicant" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

@@ -46,8 +46,25 @@ export default function AdminDashboard() {
   });
 
   // Fetch selfies
-  const { data: selfies, isLoading: isSelfiesLoading } = useQuery<Selfie[]>({
+  const { data: selfies = [], isLoading: isSelfiesLoading } = useQuery<Selfie[]>({
     queryKey: ["/api/selfies"],
+    retry: false,
+    refetchOnWindowFocus: false
+  });
+  
+  // Mutation to approve an applicant to become a team member
+  const approveMutation = useMutation({
+    mutationFn: async (applicantId: number) => {
+      return await apiRequest<{success: boolean}>(`/api/applicants/${applicantId}/approve`, {
+        method: "POST",
+        body: JSON.stringify({ id: applicantId })
+      });
+    },
+    onSuccess: () => {
+      // Invalidate cache to refresh the team members list
+      queryClient.invalidateQueries({ queryKey: ["/api/team-members"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/applicants"] });
+    }
   });
   
   // Format date safely
@@ -199,8 +216,18 @@ export default function AdminDashboard() {
                                   <UserMinus className="h-3 w-3 mr-1" />
                                   Reject
                                 </Button>
-                                <Button variant="default" size="sm" className="text-xs bg-[#FB4694]">
-                                  <UserPlus className="h-3 w-3 mr-1" />
+                                <Button 
+                                  variant="default" 
+                                  size="sm" 
+                                  className="text-xs bg-[#FB4694]"
+                                  onClick={() => approveMutation.mutate(applicant.id)}
+                                  disabled={approveMutation.isPending}
+                                >
+                                  {approveMutation.isPending ? (
+                                    <RefreshCcw className="h-3 w-3 mr-1 animate-spin" />
+                                  ) : (
+                                    <UserPlus className="h-3 w-3 mr-1" />
+                                  )}
                                   Approve
                                 </Button>
                               </div>

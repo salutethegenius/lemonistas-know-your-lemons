@@ -23,6 +23,7 @@ export interface IStorage {
   // Applicant methods
   createApplicant(applicant: InsertApplicant): Promise<Applicant>;
   getAllApplicants(): Promise<Applicant[]>;
+  getApplicant(id: number): Promise<Applicant | undefined>;
   
   // Selfie methods
   createSelfie(selfie: InsertSelfie): Promise<Selfie>;
