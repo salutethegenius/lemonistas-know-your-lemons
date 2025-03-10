@@ -3,6 +3,8 @@ import {
   teamMembers, type TeamMember, type InsertTeamMember,
   applicants, type Applicant, type InsertApplicant
 } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -22,6 +24,61 @@ export interface IStorage {
   getAllApplicants(): Promise<Applicant[]>;
 }
 
+// Database implementation
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+  
+  async getAllTeamMembers(): Promise<TeamMember[]> {
+    return db.select().from(teamMembers);
+  }
+  
+  async getTeamMember(id: number): Promise<TeamMember | undefined> {
+    const [member] = await db.select().from(teamMembers).where(eq(teamMembers.id, id));
+    return member || undefined;
+  }
+  
+  async createTeamMember(member: InsertTeamMember): Promise<TeamMember> {
+    const [newMember] = await db
+      .insert(teamMembers)
+      .values(member)
+      .returning();
+    return newMember;
+  }
+  
+  async createApplicant(application: InsertApplicant): Promise<Applicant> {
+    const [newApplicant] = await db
+      .insert(applicants)
+      .values({
+        ...application,
+        submittedAt: new Date()
+      })
+      .returning();
+    return newApplicant;
+  }
+  
+  async getAllApplicants(): Promise<Applicant[]> {
+    return db.select().from(applicants);
+  }
+}
+
+// Uncomment the below class to use in-memory storage instead
+/*
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
   private teamMembersMap: Map<number, TeamMember>;
@@ -130,5 +187,6 @@ export class MemStorage implements IStorage {
     });
   }
 }
+*/
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
