@@ -2,11 +2,14 @@ import { useRoute, Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Linkedin, Mail, Share2, Twitter, Facebook } from "lucide-react";
+import { ArrowLeft, Linkedin, Mail, Share2, Twitter, Facebook, Camera } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TeamMember } from "@/lib/teamMembers";
 import Footer from "@/components/Footer";
+import { useState } from "react";
+import SelfieUploadModal from "@/components/SelfieUploadModal";
+import SuccessModal from "@/components/SuccessModal";
 import { 
   Tooltip,
   TooltipContent,
@@ -17,11 +20,30 @@ import {
 export default function TeamMemberDetail() {
   const [match, params] = useRoute("/team-member/:id");
   const memberId = params?.id ? parseInt(params.id) : null;
+  const [isSelfieModalOpen, setIsSelfieModalOpen] = useState(false);
+  const [isSelfieSuccessModalOpen, setIsSelfieSuccessModalOpen] = useState(false);
 
   const { data: member, isLoading } = useQuery<TeamMember>({
     queryKey: ["/api/team-members", memberId],
     enabled: !!memberId,
   });
+  
+  const handleOpenSelfieModal = () => {
+    setIsSelfieModalOpen(true);
+  };
+  
+  const handleCloseSelfieModal = () => {
+    setIsSelfieModalOpen(false);
+  };
+  
+  const handleSelfieSuccess = () => {
+    setIsSelfieModalOpen(false);
+    setIsSelfieSuccessModalOpen(true);
+  };
+  
+  const handleCloseSelfieSuccessModal = () => {
+    setIsSelfieSuccessModalOpen(false);
+  };
 
   if (isLoading) {
     return <TeamMemberDetailSkeleton />;
@@ -194,6 +216,17 @@ export default function TeamMemberDetail() {
                       </TooltipProvider>
                     </div>
                   </div>
+                  
+                  {/* Upload Selfie Button */}
+                  <div className="mt-6">
+                    <Button 
+                      onClick={handleOpenSelfieModal} 
+                      className="w-full flex items-center justify-center space-x-2 bg-[#FB4694] hover:bg-[#FB4694]/90 text-white py-3 rounded-xl"
+                    >
+                      <Camera className="h-5 w-5 mr-2" />
+                      <span>Upload Selfie with {member.name}</span>
+                    </Button>
+                  </div>
                 </div>
                 
                 <div className="md:w-3/5">
@@ -224,6 +257,21 @@ export default function TeamMemberDetail() {
         </Card>
       </div>
       <Footer />
+      
+      {/* Selfie Upload Modal */}
+      {isSelfieModalOpen && member && (
+        <SelfieUploadModal 
+          onClose={handleCloseSelfieModal} 
+          onSuccess={handleSelfieSuccess}
+          teamMemberId={member.id}
+          teamMemberName={member.name}
+        />
+      )}
+      
+      {/* Success Modal */}
+      {isSelfieSuccessModalOpen && (
+        <SuccessModal onClose={handleCloseSelfieSuccessModal} />
+      )}
     </div>
   );
 }

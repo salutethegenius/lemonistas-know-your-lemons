@@ -1,7 +1,8 @@
 import { 
   users, type User, type InsertUser,
   teamMembers, type TeamMember, type InsertTeamMember,
-  applicants, type Applicant, type InsertApplicant
+  applicants, type Applicant, type InsertApplicant,
+  selfies, type Selfie, type InsertSelfie
 } from "@shared/schema";
 import { db } from "./db";
 import { eq } from "drizzle-orm";

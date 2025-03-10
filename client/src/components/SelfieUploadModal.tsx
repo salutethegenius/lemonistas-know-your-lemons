@@ -13,9 +13,12 @@ import { useToast } from "@/hooks/use-toast";
 interface SelfieUploadModalProps {
   onClose: () => void;
   onSuccess: () => void;
+  teamMemberId: number;
+  teamMemberName: string;
 }
 
 const selfieUploadSchema = z.object({
+  teamMemberId: z.number(),
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Please enter a valid phone number"),
@@ -24,7 +27,7 @@ const selfieUploadSchema = z.object({
 
 type SelfieFormData = z.infer<typeof selfieUploadSchema>;
 
-export default function SelfieUploadModal({ onClose, onSuccess }: SelfieUploadModalProps) {
+export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, teamMemberName }: SelfieUploadModalProps) {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const { toast } = useToast();
 
