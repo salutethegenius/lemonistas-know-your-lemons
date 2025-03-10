@@ -80,7 +80,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // If no valid image URL is available, send a default image
-      const defaultImagePath = path.join(__dirname, "../assets/default-profile.jpg");
+      const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
       if (fs.existsSync(defaultImagePath)) {
         return res.sendFile(defaultImagePath);
       }
