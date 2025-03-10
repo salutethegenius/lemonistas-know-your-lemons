@@ -130,6 +130,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Error uploading selfie" });
     }
   });
+  
+  // Get all applicants for admin dashboard
+  app.get("/api/applicants", async (req: Request, res: Response) => {
+    try {
+      const applicants = await storage.getAllApplicants();
+      res.json(applicants);
+    } catch (error) {
+      console.error("Error fetching applicants:", error);
+      res.status(500).json({ message: "Error fetching applicants" });
+    }
+  });
+  
+  // Get all selfies for admin dashboard
+  app.get("/api/selfies", async (req: Request, res: Response) => {
+    try {
+      const selfies = await storage.getAllSelfies();
+      res.json(selfies);
+    } catch (error) {
+      console.error("Error fetching selfies:", error);
+      res.status(500).json({ message: "Error fetching selfies" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
