@@ -7,9 +7,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, UserPlus, UserMinus, RefreshCcw, CheckCircle2, Download, Users } from "lucide-react";
-import { TeamMember, ApplicantFormData } from "@/lib/teamMembers";
+import { TeamMember, ApplicantFormData, getTeamMemberImageUrl } from "@/lib/teamMembers";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import Footer from "@/components/Footer";
+
+// Function to get the appropriate image URL for a team member
+function getTeamMemberImage(member: TeamMember): string {
+  // For the original 4 members (gwen, ivalee, portia, sam), use name-based URLs
+  const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
+  const nameLower = member.name.toLowerCase();
+  
+  if (originalMembers.includes(nameLower)) {
+    return `/api/team-members/${nameLower}`;
+  }
+  
+  // For approved members with direct URLs, use those
+  if (member.imageUrl && (member.imageUrl.startsWith('http://') || member.imageUrl.startsWith('https://'))) {
+    return member.imageUrl;
+  }
+  
+  // Fallback to the image helper for any other case
+  return getTeamMemberImageUrl(member);
+}
 
 interface Applicant {
   id: number;
@@ -55,10 +74,11 @@ export default function AdminDashboard() {
   // Mutation to approve an applicant to become a team member
   const approveMutation = useMutation({
     mutationFn: async (applicantId: number) => {
-      return await apiRequest(`/api/applicants/${applicantId}/approve`, {
-        method: "POST",
-        body: JSON.stringify({ id: applicantId })
-      });
+      return await apiRequest(
+        "POST",
+        `/api/applicants/${applicantId}/approve`, 
+        { id: applicantId }
+      );
     },
     onSuccess: () => {
       // Invalidate cache to refresh the team members list
