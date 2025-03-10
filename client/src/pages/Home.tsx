@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { LockKeyhole } from "lucide-react";
 export default function Home() {
   const [isJoinFormOpen, setIsJoinFormOpen] = useState(false);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const teamSectionRef = useRef<HTMLDivElement>(null);
 
   const { data: teamMembers, isLoading } = useQuery<TeamMember[]>({
     queryKey: ["/api/team-members"],
@@ -34,10 +35,15 @@ export default function Home() {
   const handleCloseSuccessModal = () => {
     setIsSuccessModalOpen(false);
   };
+  
+  // Scroll to team section
+  const scrollToTeamSection = () => {
+    teamSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <div className="bg-[#F8F6F4] font-montserrat text-[#292929] min-h-screen">
-      <Hero onJoinClick={handleOpenJoinForm} />
+      <Hero onJoinClick={scrollToTeamSection} />
       
       {/* Mission section */}
       <section className="py-16 px-4 bg-white">
@@ -71,11 +77,13 @@ export default function Home() {
         </div>
       </section>
 
-      <TeamGrid 
-        teamMembers={teamMembers || []} 
-        isLoading={isLoading} 
-        onJoinClick={handleOpenJoinForm}
-      />
+      <div ref={teamSectionRef}>
+        <TeamGrid 
+          teamMembers={teamMembers || []} 
+          isLoading={isLoading} 
+          onJoinClick={handleOpenJoinForm}
+        />
+      </div>
       {/* Admin link (this would typically be secured in a real application) */}
       <div className="container mx-auto px-4 py-8 text-right">
         <Link href="/admin">

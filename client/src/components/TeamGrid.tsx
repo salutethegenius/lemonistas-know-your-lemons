@@ -59,20 +59,17 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
             ))
           )}
 
-          {/* Empty spots (4 placeholders) */}
-          {Array(4).fill(0).map((_, index) => (
-            <Card 
-              key={`empty-${index}`} 
-              className="team-card bg-white rounded-xl shadow-md overflow-hidden border-2 border-dashed border-gray-300 flex flex-col items-center justify-center p-6 h-80"
-              onClick={onJoinClick}
-            >
-              <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                <UserPlus className="h-8 w-8 text-gray-400" />
-              </div>
-              <h3 className="font-poppins font-semibold text-xl text-gray-400 mb-2">Join Our Team</h3>
-              <p className="text-center text-gray-400 text-sm">This could be you! Apply to become a Lemonista today.</p>
-            </Card>
-          ))}
+          {/* Single "Join Our Team" placeholder */}
+          <Card 
+            className="team-card bg-white rounded-xl shadow-md overflow-hidden border-2 border-dashed border-gray-300 flex flex-col items-center justify-center p-6 h-80"
+            onClick={onJoinClick}
+          >
+            <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <UserPlus className="h-8 w-8 text-gray-400" />
+            </div>
+            <h3 className="font-poppins font-semibold text-xl text-gray-400 mb-2">Join Our Team</h3>
+            <p className="text-center text-gray-400 text-sm">This could be you! Apply to become a Lemonista today.</p>
+          </Card>
         </div>
       </div>
     </section>
