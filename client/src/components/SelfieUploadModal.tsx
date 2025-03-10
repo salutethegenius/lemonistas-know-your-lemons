@@ -40,10 +40,7 @@ export default function SelfieUploadModal({ onClose, onSuccess }: SelfieUploadMo
 
   const mutation = useMutation({
     mutationFn: async (data: SelfieFormData) => {
-      return apiRequest("/api/selfies", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      return apiRequest("POST", "/api/selfies", data);
     },
     onSuccess: () => {
       toast({

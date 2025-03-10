@@ -22,6 +22,10 @@ export interface IStorage {
   // Applicant methods
   createApplicant(applicant: InsertApplicant): Promise<Applicant>;
   getAllApplicants(): Promise<Applicant[]>;
+  
+  // Selfie methods
+  createSelfie(selfie: InsertSelfie): Promise<Selfie>;
+  getAllSelfies(): Promise<Selfie[]>;
 }
 
 // Database implementation
@@ -76,6 +80,23 @@ export class DatabaseStorage implements IStorage {
   
   async getAllApplicants(): Promise<Applicant[]> {
     return db.select().from(applicants);
+  }
+  
+  async createSelfie(selfieData: InsertSelfie): Promise<Selfie> {
+    // Format the date as ISO string for compatibility
+    const submittedAt = new Date().toISOString();
+    const [newSelfie] = await db
+      .insert(selfies)
+      .values({
+        ...selfieData,
+        submittedAt
+      })
+      .returning();
+    return newSelfie;
+  }
+  
+  async getAllSelfies(): Promise<Selfie[]> {
+    return db.select().from(selfies);
   }
 }
 

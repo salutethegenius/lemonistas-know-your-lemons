@@ -58,3 +58,25 @@ export const applicantFormSchema = insertApplicantSchema.extend({
 
 export type InsertApplicant = z.infer<typeof insertApplicantSchema>;
 export type Applicant = typeof applicants.$inferSelect;
+
+export const selfies = pgTable("selfies", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  phone: text("phone").notNull(),
+  photoUrl: text("photo_url"),
+  submittedAt: text("submitted_at").notNull(),
+});
+
+export const insertSelfieSchema = createInsertSchema(selfies).omit({
+  id: true,
+  submittedAt: true,
+});
+
+export const selfieFormSchema = insertSelfieSchema.extend({
+  email: z.string().email("Please enter a valid email address"),
+  phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Please enter a valid phone number"),
+});
+
+export type InsertSelfie = z.infer<typeof insertSelfieSchema>;
+export type Selfie = typeof selfies.$inferSelect;
