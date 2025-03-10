@@ -249,6 +249,61 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Error approving applicant" });
     }
   });
+  
+  // Delete a team member
+  app.delete("/api/team-members/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid team member ID" });
+      }
+      
+      // Get the team member to verify it exists
+      const teamMember = await storage.getTeamMember(id);
+      if (!teamMember) {
+        return res.status(404).json({ message: "Team member not found" });
+      }
+      
+      // Delete the team member
+      await storage.deleteTeamMember(id);
+      
+      res.status(200).json({ 
+        success: true, 
+        message: "Team member deleted successfully"
+      });
+    } catch (error) {
+      console.error("Error deleting team member:", error);
+      res.status(500).json({ message: "Error deleting team member" });
+    }
+  });
+  
+  // Update a team member
+  app.put("/api/team-members/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid team member ID" });
+      }
+      
+      // Get the team member to verify it exists
+      const existingMember = await storage.getTeamMember(id);
+      if (!existingMember) {
+        return res.status(404).json({ message: "Team member not found" });
+      }
+      
+      // Update the team member with the request body
+      const updatedMember = await storage.updateTeamMember(id, req.body);
+      
+      res.status(200).json({ 
+        success: true, 
+        message: "Team member updated successfully",
+        teamMember: updatedMember
+      });
+    } catch (error) {
+      console.error("Error updating team member:", error);
+      res.status(500).json({ message: "Error updating team member" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;

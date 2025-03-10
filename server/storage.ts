@@ -19,11 +19,15 @@ export interface IStorage {
   getAllTeamMembers(): Promise<TeamMember[]>;
   getTeamMember(id: number): Promise<TeamMember | undefined>;
   createTeamMember(member: InsertTeamMember): Promise<TeamMember>;
+  updateTeamMember(id: number, data: Partial<InsertTeamMember>): Promise<TeamMember>;
+  deleteTeamMember(id: number): Promise<void>;
   
   // Applicant methods
   createApplicant(applicant: InsertApplicant): Promise<Applicant>;
   getAllApplicants(): Promise<Applicant[]>;
+  getPendingApplicants(): Promise<Applicant[]>;
   getApplicant(id: number): Promise<Applicant | undefined>;
+  updateApplicantStatus(id: number, status: string): Promise<Applicant>;
   
   // Selfie methods
   createSelfie(selfie: InsertSelfie): Promise<Selfie>;
@@ -85,9 +89,37 @@ export class DatabaseStorage implements IStorage {
     return db.select().from(applicants);
   }
   
+  async getPendingApplicants(): Promise<Applicant[]> {
+    return db.select().from(applicants).where(eq(applicants.status, "pending"));
+  }
+  
   async getApplicant(id: number): Promise<Applicant | undefined> {
     const [applicant] = await db.select().from(applicants).where(eq(applicants.id, id));
     return applicant || undefined;
+  }
+  
+  async updateApplicantStatus(id: number, status: string): Promise<Applicant> {
+    const [updatedApplicant] = await db
+      .update(applicants)
+      .set({ status })
+      .where(eq(applicants.id, id))
+      .returning();
+    return updatedApplicant;
+  }
+  
+  async updateTeamMember(id: number, data: Partial<InsertTeamMember>): Promise<TeamMember> {
+    const [updatedMember] = await db
+      .update(teamMembers)
+      .set(data)
+      .where(eq(teamMembers.id, id))
+      .returning();
+    return updatedMember;
+  }
+  
+  async deleteTeamMember(id: number): Promise<void> {
+    await db
+      .delete(teamMembers)
+      .where(eq(teamMembers.id, id));
   }
   
   async createSelfie(selfieData: InsertSelfie): Promise<Selfie> {

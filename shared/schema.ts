@@ -44,6 +44,7 @@ export const applicants = pgTable("applicants", {
   whyJoin: text("why_join").notNull(),
   photoUrl: text("photo_url"),
   submittedAt: text("submitted_at").notNull(), // Changed from date to text for simplicity
+  status: text("status").default("pending"), // pending, approved, rejected
 });
 
 export const insertApplicantSchema = createInsertSchema(applicants).omit({
