@@ -44,12 +44,17 @@ export default function TeamMemberDetail() {
     setIsSelfieSuccessModalOpen(false);
   };
 
-  // Get image URL for the member
-  const getMemberImageUrl = (member: TeamMember | undefined | null): string => {
-    if (!member || !member.name) {
-      return '';
+  // Log info about the member for debugging
+  const logMemberInfo = (member: TeamMember | undefined | null): void => {
+    if (!member) {
+      console.log("Member is undefined");
+      return;
     }
-    return `/api/team-members/${member.name.toLowerCase()}`;
+    console.log("Member data:", {
+      id: member.id,
+      name: member.name,
+      imageUrl: member.imageUrl
+    });
   };
 
   // Function to handle sharing
@@ -109,7 +114,8 @@ export default function TeamMemberDetail() {
     );
   }
 
-  const memberImageUrl = getMemberImageUrl(member);
+  // Log member data for debugging
+  logMemberInfo(member);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8F6F4]">
@@ -143,9 +149,9 @@ export default function TeamMemberDetail() {
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-2/5">
                   <div className="rounded-xl overflow-hidden shadow-lg border border-gray-100">
-                    {memberImageUrl && (
+                    {member.imageUrl && (
                       <img 
-                        src={memberImageUrl} 
+                        src={member.imageUrl} 
                         alt={member.name} 
                         className="w-full h-auto object-cover aspect-square" 
                       />
