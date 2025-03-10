@@ -19,26 +19,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Error fetching team members" });
     }
   });
-
-  app.get("/api/team-members/:id", async (req: Request, res: Response) => {
-    try {
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid team member ID" });
-      }
-      
-      const teamMember = await storage.getTeamMember(id);
-      if (!teamMember) {
-        return res.status(404).json({ message: "Team member not found" });
-      }
-      
-      res.json(teamMember);
-    } catch (error) {
-      res.status(500).json({ message: "Error fetching team member" });
-    }
-  });
   
-  // Team member image routes
+  // Team member image routes - must be before /:id route to avoid conflict
   app.get("/api/team-members/gwen", (req: Request, res: Response) => {
     const imagePath = path.join(__dirname, "../assets/Gwen.jpg");
     // Handle missing file
@@ -73,6 +55,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(404).send("Image not found");
     }
     res.sendFile(imagePath);
+  });
+
+  // Team member by ID route - must be last to avoid conflicting with named routes
+  app.get("/api/team-members/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid team member ID" });
+      }
+      
+      const teamMember = await storage.getTeamMember(id);
+      if (!teamMember) {
+        return res.status(404).json({ message: "Team member not found" });
+      }
+      
+      res.json(teamMember);
+    } catch (error) {
+      res.status(500).json({ message: "Error fetching team member" });
+    }
   });
 
   // Applicant routes

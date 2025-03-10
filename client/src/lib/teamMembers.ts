@@ -16,7 +16,7 @@ export interface ApplicantFormData {
   phone: string;
   location: string;
   whyJoin: string;
-  photoUrl?: string;
+  photoUrl?: string | null;
 }
 
 export const LOCATIONS = [
