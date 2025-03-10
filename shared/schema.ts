@@ -43,7 +43,7 @@ export const applicants = pgTable("applicants", {
   location: text("location").notNull(),
   whyJoin: text("why_join").notNull(),
   photoUrl: text("photo_url"),
-  submittedAt: date("submitted_at").notNull(),
+  submittedAt: text("submitted_at").notNull(), // Changed from date to text for simplicity
 });
 
 export const insertApplicantSchema = createInsertSchema(applicants).omit({

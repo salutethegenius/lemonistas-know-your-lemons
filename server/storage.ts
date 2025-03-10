@@ -62,11 +62,13 @@ export class DatabaseStorage implements IStorage {
   }
   
   async createApplicant(application: InsertApplicant): Promise<Applicant> {
+    // Format the date as ISO string for compatibility
+    const submittedAt = new Date().toISOString().split('T')[0];
     const [newApplicant] = await db
       .insert(applicants)
       .values({
         ...application,
-        submittedAt: new Date()
+        submittedAt
       })
       .returning();
     return newApplicant;
