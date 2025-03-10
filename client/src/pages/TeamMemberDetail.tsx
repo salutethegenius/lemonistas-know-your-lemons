@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Linkedin, Mail, Share2, Twitter, Facebook, Camera } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TeamMember } from "@/lib/teamMembers";
+import { TeamMember, getTeamMemberImageUrl } from "@/lib/teamMembers";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 import SelfieUploadModal from "@/components/SelfieUploadModal";
@@ -134,7 +134,7 @@ export default function TeamMemberDetail() {
                 <div className="md:w-2/5">
                   <div className="rounded-xl overflow-hidden shadow-lg border border-gray-100">
                     <img 
-                      src={member.imageUrl} 
+                      src={getTeamMemberImageUrl(member)} 
                       alt={member.name} 
                       className="w-full h-auto object-cover aspect-square" 
                     />
