@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Linkedin, Mail, Share2, Twitter, Facebook, Camera } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TeamMember } from "@/lib/teamMembers";
+import { TeamMember, getTeamMemberImageUrl } from "@/lib/teamMembers";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 import SelfieUploadModal from "@/components/SelfieUploadModal";
@@ -15,6 +15,29 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from "@/components/ui/tooltip";
+
+// Function to generate the appropriate image URL for a team member
+function getTeamMemberImage(member: TeamMember | null | undefined): string {
+  if (!member) {
+    return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
+  }
+  
+  // For the original 4 members (gwen, ivalee, portia, sam), use name-based URLs
+  const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
+  const nameLower = member.name.toLowerCase();
+  
+  if (originalMembers.includes(nameLower)) {
+    return `/api/team-members/${nameLower}`;
+  }
+  
+  // For approved members with direct URLs, use those
+  if (member.imageUrl && (member.imageUrl.startsWith('http://') || member.imageUrl.startsWith('https://'))) {
+    return member.imageUrl;
+  }
+  
+  // Fallback to the image helper for any other case
+  return getTeamMemberImageUrl(member);
+}
 
 export default function TeamMemberDetail() {
   const [match, params] = useRoute("/team-member/:id");
@@ -27,8 +50,14 @@ export default function TeamMemberDetail() {
     queryKey: ["/api/team-members"],
   });
 
-  // Find the specific member by ID
-  const member = allMembers?.find(m => m.id === memberId);
+  // Use a dedicated query to get the member details if needed
+  const { data: memberData } = useQuery<TeamMember>({
+    queryKey: ["/api/team-members", memberId],
+    enabled: memberId !== null,
+  });
+
+  // Find the specific member by ID (either from the list or direct query)
+  const member = memberData || allMembers?.find(m => m.id === memberId);
 
   const handleOpenSelfieModal = () => {
     setIsSelfieModalOpen(true);
@@ -149,9 +178,13 @@ export default function TeamMemberDetail() {
                 <div className="md:w-2/5">
                   <div className="rounded-xl overflow-hidden shadow-lg border border-gray-100">
                     <img 
-                      src={`/api/team-members/${member.name.toLowerCase()}`}
+                      src={getTeamMemberImage(member)}
                       alt={member.name} 
                       className="w-full h-auto object-cover aspect-square"
+                      onError={(e) => {
+                        // Fallback if the image fails to load
+                        e.currentTarget.src = "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
+                      }}
                     />
                   </div>
 

@@ -56,6 +56,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     res.sendFile(imagePath);
   });
+  
+  // Generic route to handle any team member images by name
+  // This is important for handling new members approved from applications
+  app.get("/api/team-members/image/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid team member ID" });
+      }
+      
+      const teamMember = await storage.getTeamMember(id);
+      if (!teamMember) {
+        return res.status(404).json({ message: "Team member not found" });
+      }
+      
+      // If the imageUrl is an absolute URL, redirect to it
+      if (teamMember.imageUrl && (teamMember.imageUrl.startsWith('http://') || teamMember.imageUrl.startsWith('https://'))) {
+        return res.redirect(teamMember.imageUrl);
+      }
+      
+      // If no image URL or a relative URL that's not found, return a default image
+      res.status(404).json({ message: "Image not available" });
+    } catch (error) {
+      console.error("Error fetching team member image:", error);
+      res.status(500).json({ message: "Error fetching team member image" });
+    }
+  });
 
   // Team member by ID route - must be last to avoid conflicting with named routes
   app.get("/api/team-members/:id", async (req: Request, res: Response) => {
@@ -150,6 +177,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching selfies:", error);
       res.status(500).json({ message: "Error fetching selfies" });
+    }
+  });
+  
+  // Get selfies for a specific team member
+  app.get("/api/team-members/:id/selfies", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid team member ID" });
+      }
+      
+      // Verify team member exists
+      const teamMember = await storage.getTeamMember(id);
+      if (!teamMember) {
+        return res.status(404).json({ message: "Team member not found" });
+      }
+      
+      const selfies = await storage.getSelfiesByTeamMemberId(id);
+      res.json(selfies);
+    } catch (error) {
+      console.error("Error fetching team member selfies:", error);
+      res.status(500).json({ message: "Error fetching team member selfies" });
     }
   });
 

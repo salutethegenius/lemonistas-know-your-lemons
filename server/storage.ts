@@ -28,6 +28,7 @@ export interface IStorage {
   // Selfie methods
   createSelfie(selfie: InsertSelfie): Promise<Selfie>;
   getAllSelfies(): Promise<Selfie[]>;
+  getSelfiesByTeamMemberId(teamMemberId: number): Promise<Selfie[]>;
 }
 
 // Database implementation
@@ -84,6 +85,11 @@ export class DatabaseStorage implements IStorage {
     return db.select().from(applicants);
   }
   
+  async getApplicant(id: number): Promise<Applicant | undefined> {
+    const [applicant] = await db.select().from(applicants).where(eq(applicants.id, id));
+    return applicant || undefined;
+  }
+  
   async createSelfie(selfieData: InsertSelfie): Promise<Selfie> {
     // Format the date as ISO string for compatibility
     const submittedAt = new Date().toISOString();
@@ -99,6 +105,10 @@ export class DatabaseStorage implements IStorage {
   
   async getAllSelfies(): Promise<Selfie[]> {
     return db.select().from(selfies);
+  }
+  
+  async getSelfiesByTeamMemberId(teamMemberId: number): Promise<Selfie[]> {
+    return db.select().from(selfies).where(eq(selfies.teamMemberId, teamMemberId));
   }
 }
 
