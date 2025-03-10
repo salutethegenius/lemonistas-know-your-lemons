@@ -61,6 +61,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // This is important for handling new members approved from applications
   app.get("/api/team-members/image/:id", async (req: Request, res: Response) => {
     try {
+      // Handle undefined or invalid IDs
+      if (!req.params.id || req.params.id === 'undefined') {
+        // Send a default image instead of an error
+        const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
+        if (fs.existsSync(defaultImagePath)) {
+          return res.sendFile(defaultImagePath);
+        }
+        return res.status(400).json({ message: "Invalid team member ID" });
+      }
+      
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
         return res.status(400).json({ message: "Invalid team member ID" });

@@ -18,8 +18,13 @@ function getTeamMemberImage(member: TeamMember): string {
     }
   }
   
-  // For all other cases, use the image by ID endpoint
-  return `/api/team-members/image/${member.id}`;
+  // For all other cases, use the image by ID endpoint if member.id exists
+  if (member.id) {
+    return `/api/team-members/image/${member.id}`;
+  }
+  
+  // Fallback if member.id doesn't exist
+  return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
 }
 
 interface TeamGridProps {
