@@ -66,6 +66,9 @@ export const selfies = pgTable("selfies", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
+  message: text("message"),
+  location: text("location"),
+  caption: text("caption"),
   photoUrl: text("photo_url"),
   submittedAt: text("submitted_at").notNull(),
 });

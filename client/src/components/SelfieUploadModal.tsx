@@ -22,6 +22,9 @@ const selfieUploadSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Please enter a valid phone number"),
+  message: z.string().min(1, "Message is required"),
+  location: z.string().min(1, "Location is required"),
+  caption: z.string().optional(),
   photoUrl: z.string().optional(),
 });
 
@@ -38,6 +41,9 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
       name: "",
       email: "",
       phone: "",
+      message: "",
+      location: "",
+      caption: "",
       photoUrl: "",
     },
   });
@@ -171,6 +177,52 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
                   <FormLabel>Phone Number</FormLabel>
                   <FormControl>
                     <Input placeholder="+1234567890" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Message</FormLabel>
+                  <FormControl>
+                    <textarea 
+                      className="w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 h-24 resize-none"
+                      placeholder="Share your experience with this team member..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Nassau, Bahamas" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="caption"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Photo Caption (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="A short caption for your selfie" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
