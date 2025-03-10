@@ -10,11 +10,17 @@ export interface TeamMember {
 }
 
 // Helper function to get full image URL for a team member
-export function getTeamMemberImageUrl(member: TeamMember): string {
-  // Ensure the imageUrl starts with /api/
-  if (member.imageUrl.startsWith('/api/')) {
+export function getTeamMemberImageUrl(member: TeamMember | null | undefined): string {
+  // Handle undefined member case
+  if (!member) {
+    return '';
+  }
+  
+  // Ensure the imageUrl starts with /api/ if it exists
+  if (member.imageUrl && member.imageUrl.startsWith('/api/')) {
     return member.imageUrl;
   }
+  
   // Otherwise, construct the URL using the member's name
   return `/api/team-members/${member.name.toLowerCase()}`;
 }
