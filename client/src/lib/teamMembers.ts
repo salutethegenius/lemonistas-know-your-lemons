@@ -16,6 +16,12 @@ export function getTeamMemberImageUrl(member: TeamMember | null | undefined): st
     return '';
   }
   
+  // Ensure member.name exists before trying to use it
+  if (!member.name) {
+    // If member has no name, fall back to the ID-based endpoint
+    return `/api/team-members/image/${member.id}`;
+  }
+  
   // Original 4 members (gwen, ivalee, portia, sam) have name-based URLs
   const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
   const nameLower = member.name.toLowerCase();
