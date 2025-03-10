@@ -55,7 +55,7 @@ export default function AdminDashboard() {
   // Mutation to approve an applicant to become a team member
   const approveMutation = useMutation({
     mutationFn: async (applicantId: number) => {
-      return await apiRequest<{success: boolean}>(`/api/applicants/${applicantId}/approve`, {
+      return await apiRequest(`/api/applicants/${applicantId}/approve`, {
         method: "POST",
         body: JSON.stringify({ id: applicantId })
       });
@@ -139,9 +139,12 @@ export default function AdminDashboard() {
                       <Card key={member.id} className="overflow-hidden shadow-md">
                         <div className="h-40 overflow-hidden">
                           <img
-                            src={`/api/team-members/${member.name.toLowerCase()}`}
+                            src={getTeamMemberImage(member)}
                             alt={member.name}
                             className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
+                            }}
                           />
                         </div>
                         <CardContent className="p-4">

@@ -16,6 +16,16 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip";
 
+// Interface for Selfies linked to team members
+interface Selfie {
+  id: number;
+  location: string;
+  caption: string;
+  teamMemberId: number;
+  createdAt: string;
+  photoUrl: string | null;
+}
+
 // Function to generate the appropriate image URL for a team member
 function getTeamMemberImage(member: TeamMember | null | undefined): string {
   if (!member) {
@@ -53,6 +63,12 @@ export default function TeamMemberDetail() {
   // Use a dedicated query to get the member details if needed
   const { data: memberData } = useQuery<TeamMember>({
     queryKey: ["/api/team-members", memberId],
+    enabled: memberId !== null,
+  });
+
+  // Fetch selfies for this team member
+  const { data: memberSelfies = [] } = useQuery<Selfie[]>({
+    queryKey: ["/api/team-members", memberId, "selfies"],
     enabled: memberId !== null,
   });
 
@@ -287,6 +303,7 @@ export default function TeamMemberDetail() {
                     <p className="text-[#292929] text-lg leading-relaxed">{member.bio}</p>
                   </div>
 
+                  {/* Connect section */}
                   <div className="mt-8">
                     <h4 className="font-poppins font-semibold mb-4">Connect</h4>
                     <Button variant="outline" className="mr-3 bg-white">
@@ -298,6 +315,42 @@ export default function TeamMemberDetail() {
                       LinkedIn
                     </Button>
                   </div>
+                  
+                  {/* Selfies section - show only if there are selfies */}
+                  {memberSelfies && memberSelfies.length > 0 && (
+                    <div className="mt-8">
+                      <h4 className="font-poppins font-semibold mb-4">Community Selfies</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {memberSelfies.map((selfie) => (
+                          <Card key={selfie.id} className="overflow-hidden">
+                            <div className="h-48 overflow-hidden">
+                              {selfie.photoUrl ? (
+                                <img 
+                                  src={selfie.photoUrl} 
+                                  alt={`Selfie with ${member.name}`} 
+                                  className="w-full h-full object-cover"
+                                  onError={(e) => {
+                                    e.currentTarget.src = "https://placehold.co/400x400/f8f6f4/FB4694?text=Selfie&font=poppins";
+                                  }}
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                                  <Camera className="h-8 w-8 text-gray-400" />
+                                </div>
+                              )}
+                            </div>
+                            <CardContent className="p-3">
+                              <p className="text-sm font-medium mb-1">{selfie.caption}</p>
+                              <p className="text-xs text-gray-500 mb-1">{selfie.location}</p>
+                              <p className="text-xs text-gray-400">
+                                {new Date(selfie.createdAt).toLocaleDateString()}
+                              </p>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

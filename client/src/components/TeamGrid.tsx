@@ -1,8 +1,27 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TeamMember } from "@/lib/teamMembers";
+import { TeamMember, getTeamMemberImageUrl } from "@/lib/teamMembers";
 import { UserPlus } from "lucide-react";
+
+// Helper function to get the proper image for a team member
+function getTeamMemberImage(member: TeamMember): string {
+  // For the original 4 members (gwen, ivalee, portia, sam), use name-based URLs
+  const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
+  const nameLower = member.name.toLowerCase();
+  
+  if (originalMembers.includes(nameLower)) {
+    return `/api/team-members/${nameLower}`;
+  }
+  
+  // For approved members with direct URLs, use those
+  if (member.imageUrl && (member.imageUrl.startsWith('http://') || member.imageUrl.startsWith('https://'))) {
+    return member.imageUrl;
+  }
+  
+  // Fallback to the image helper for any other case
+  return getTeamMemberImageUrl(member);
+}
 
 interface TeamGridProps {
   teamMembers: TeamMember[];
@@ -30,9 +49,13 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
                   <Card className="team-card transition-all duration-300 bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden cursor-pointer h-full">
                     <div className="h-64 overflow-hidden">
                       <img 
-                        src={`/api/team-members/${member.name.toLowerCase()}`}
+                        src={getTeamMemberImage(member)}
                         alt={member.name} 
-                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" 
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                        onError={(e) => {
+                          // Fallback if the image fails to load
+                          e.currentTarget.src = "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
+                        }}
                       />
                     </div>
                     <CardContent className="p-4">
