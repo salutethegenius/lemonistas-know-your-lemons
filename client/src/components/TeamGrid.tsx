@@ -15,7 +15,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
     <section className="py-16 px-4">
       <div className="container mx-auto">
         <h2 className="text-3xl font-poppins font-bold text-center mb-12">Our Team of Educators</h2>
-        
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {isLoading ? (
             // Loading skeletons
@@ -30,15 +30,15 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
                   <Card className="team-card transition-all duration-300 bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden cursor-pointer h-full">
                     <div className="h-64 overflow-hidden">
                       <img 
-                        src={member.imageUrl} 
+                        src={`/api/team-members/${member.name.toLowerCase()}`}
                         alt={member.name} 
-                        className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" 
+                        className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" 
                       />
                     </div>
                     <CardContent className="p-4">
                       <h3 className="font-poppins font-semibold text-xl mb-1">{member.name}</h3>
-                      <p className="text-[#7D7B7B] text-sm">{member.role}</p>
-                      <div className="flex items-center mt-3">
+                      <p className="text-sm text-[#7D7B7B] mb-2">{member.role}</p>
+                      <div className="flex items-center">
                         <span className="inline-block w-2 h-2 rounded-full bg-[#7D7B7B] mr-2"></span>
                         <span className="text-sm">{member.location}</span>
                       </div>
@@ -48,7 +48,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
               </div>
             ))
           )}
-          
+
           {/* Empty spots (4 placeholders) */}
           {Array(4).fill(0).map((_, index) => (
             <Card 

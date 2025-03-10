@@ -27,20 +27,20 @@ export default function TeamMemberDetail() {
     queryKey: ["/api/team-members", memberId],
     enabled: !!memberId,
   });
-  
+
   const handleOpenSelfieModal = () => {
     setIsSelfieModalOpen(true);
   };
-  
+
   const handleCloseSelfieModal = () => {
     setIsSelfieModalOpen(false);
   };
-  
+
   const handleSelfieSuccess = () => {
     setIsSelfieModalOpen(false);
     setIsSelfieSuccessModalOpen(true);
   };
-  
+
   const handleCloseSelfieSuccessModal = () => {
     setIsSelfieSuccessModalOpen(false);
   };
@@ -78,9 +78,9 @@ export default function TeamMemberDetail() {
   const shareProfile = (platform: string) => {
     const url = window.location.href;
     const text = `Check out ${member.name}, ${member.role} at Lemonistas!`;
-    
+
     let shareUrl = '';
-    
+
     switch(platform) {
       case 'twitter':
         shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
@@ -95,7 +95,7 @@ export default function TeamMemberDetail() {
         shareUrl = `mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent(url)}`;
         break;
     }
-    
+
     if (shareUrl) {
       window.open(shareUrl, '_blank');
     }
@@ -129,7 +129,7 @@ export default function TeamMemberDetail() {
                   </Tooltip>
                 </TooltipProvider>
               </div>
-              
+
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-2/5">
                   <div className="rounded-xl overflow-hidden shadow-lg border border-gray-100">
@@ -139,7 +139,7 @@ export default function TeamMemberDetail() {
                       className="w-full h-auto object-cover aspect-square" 
                     />
                   </div>
-                  
+
                   <div className="mt-6">
                     <h4 className="font-poppins font-semibold mb-4">Share Profile</h4>
                     <div className="flex gap-3">
@@ -160,7 +160,7 @@ export default function TeamMemberDetail() {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                      
+
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -178,7 +178,7 @@ export default function TeamMemberDetail() {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                      
+
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -196,7 +196,7 @@ export default function TeamMemberDetail() {
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-                      
+
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -216,7 +216,7 @@ export default function TeamMemberDetail() {
                       </TooltipProvider>
                     </div>
                   </div>
-                  
+
                   {/* Upload Selfie Button */}
                   <div className="mt-6">
                     <Button 
@@ -228,7 +228,7 @@ export default function TeamMemberDetail() {
                     </Button>
                   </div>
                 </div>
-                
+
                 <div className="md:w-3/5">
                   <div className="mb-6">
                     <h3 className="text-xl font-poppins font-semibold mb-2">{member.role}</h3>
@@ -238,7 +238,7 @@ export default function TeamMemberDetail() {
                     </div>
                     <p className="text-[#292929] text-lg leading-relaxed">{member.bio}</p>
                   </div>
-                  
+
                   <div className="mt-8">
                     <h4 className="font-poppins font-semibold mb-4">Connect</h4>
                     <Button variant="outline" className="mr-3 bg-white">
@@ -257,7 +257,7 @@ export default function TeamMemberDetail() {
         </Card>
       </div>
       <Footer />
-      
+
       {/* Selfie Upload Modal */}
       {isSelfieModalOpen && member && (
         <SelfieUploadModal 
@@ -267,7 +267,7 @@ export default function TeamMemberDetail() {
           teamMemberName={member.name}
         />
       )}
-      
+
       {/* Success Modal */}
       {isSelfieSuccessModalOpen && (
         <SuccessModal onClose={handleCloseSelfieSuccessModal} />
@@ -294,11 +294,11 @@ function TeamMemberDetailSkeleton() {
                 <Skeleton className="h-10 w-48" />
                 <Skeleton className="h-10 w-10 rounded-full" />
               </div>
-              
+
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-2/5">
                   <Skeleton className="h-80 w-full rounded-xl aspect-square" />
-                  
+
                   <div className="mt-6">
                     <Skeleton className="h-8 w-32 mb-4" />
                     <div className="flex gap-3">
@@ -309,7 +309,7 @@ function TeamMemberDetailSkeleton() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="md:w-3/5">
                   <div className="mb-6">
                     <Skeleton className="h-8 w-36 mb-2" />
@@ -322,7 +322,7 @@ function TeamMemberDetailSkeleton() {
                     <Skeleton className="h-5 w-full mb-2" />
                     <Skeleton className="h-5 w-3/4" />
                   </div>
-                  
+
                   <div className="mt-8">
                     <Skeleton className="h-8 w-32 mb-4" />
                     <div className="flex gap-3">

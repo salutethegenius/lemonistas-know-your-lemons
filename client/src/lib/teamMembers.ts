@@ -9,6 +9,16 @@ export interface TeamMember {
   imageUrl: string;
 }
 
+// Helper function to get full image URL for a team member
+export function getTeamMemberImageUrl(member: TeamMember): string {
+  // Ensure the imageUrl starts with /api/
+  if (member.imageUrl.startsWith('/api/')) {
+    return member.imageUrl;
+  }
+  // Otherwise, construct the URL using the member's name
+  return `/api/team-members/${member.name.toLowerCase()}`;
+}
+
 export interface ApplicantFormData {
   firstName: string;
   lastName: string;
