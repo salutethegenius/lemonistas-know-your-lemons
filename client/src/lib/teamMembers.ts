@@ -16,18 +16,21 @@ export function getTeamMemberImageUrl(member: TeamMember | null | undefined): st
     return '';
   }
   
-  // Ensure the imageUrl starts with /api/ if it exists
-  if (member.imageUrl && member.imageUrl.startsWith('/api/')) {
+  // Original 4 members (gwen, ivalee, portia, sam) have name-based URLs
+  const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
+  const nameLower = member.name.toLowerCase();
+  
+  if (originalMembers.includes(nameLower)) {
+    return `/api/team-members/${nameLower}`;
+  }
+  
+  // If member has a direct URL (http/https), use it directly
+  if (member.imageUrl && (member.imageUrl.startsWith('http://') || member.imageUrl.startsWith('https://'))) {
     return member.imageUrl;
   }
   
-  // Check if member has a name property
-  if (!member.name) {
-    return '';
-  }
-  
-  // Otherwise, construct the URL using the member's name
-  return `/api/team-members/${member.name.toLowerCase()}`;
+  // For all other cases, use the image by ID endpoint
+  return `/api/team-members/image/${member.id}`;
 }
 
 export interface ApplicantFormData {

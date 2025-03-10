@@ -57,7 +57,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.sendFile(imagePath);
   });
   
-  // Generic route to handle any team member images by name
+  // Generic route to handle any team member images by ID
   // This is important for handling new members approved from applications
   app.get("/api/team-members/image/:id", async (req: Request, res: Response) => {
     try {
@@ -74,9 +74,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // If the imageUrl is an absolute URL, redirect to it
       if (teamMember.imageUrl && (teamMember.imageUrl.startsWith('http://') || teamMember.imageUrl.startsWith('https://'))) {
         return res.redirect(teamMember.imageUrl);
+      } else if (teamMember.imageUrl) {
+        // If it's a non-empty string but not an absolute URL, try to send it
+        return res.redirect(teamMember.imageUrl);
       }
       
-      // If no image URL or a relative URL that's not found, return a default image
+      // If no valid image URL is available, send a default image
+      const defaultImagePath = path.join(__dirname, "../assets/default-profile.jpg");
+      if (fs.existsSync(defaultImagePath)) {
+        return res.sendFile(defaultImagePath);
+      }
+      
+      // Last resort - return a 404 if even the default image isn't available
       res.status(404).json({ message: "Image not available" });
     } catch (error) {
       console.error("Error fetching team member image:", error);
