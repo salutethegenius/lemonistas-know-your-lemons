@@ -106,6 +106,15 @@ export default function AdminDashboard() {
   // State for editing team member
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
   
+  // State for viewing applicant details
+  const [viewingApplicant, setViewingApplicant] = useState<Applicant | null>(null);
+  
+  // State for viewing selfie details
+  const [viewingSelfie, setViewingSelfie] = useState<Selfie | null>(null);
+  
+  // State for team member deletion confirmation
+  const [selectedMemberForDelete, setSelectedMemberForDelete] = useState<TeamMember | null>(null);
+  
   // Mutation to update a team member
   const updateMemberMutation = useMutation({
     mutationFn: async (data: { id: number, updates: Partial<TeamMember> }) => {
@@ -280,7 +289,12 @@ export default function AdminDashboard() {
                             </td>
                             <td className="py-4 px-4 text-sm">
                               <div className="flex gap-2">
-                                <Button variant="outline" size="sm" className="text-xs bg-white">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  className="text-xs bg-white"
+                                  onClick={() => setViewingApplicant(applicant)}
+                                >
                                   View
                                 </Button>
                                 <Button 
@@ -495,6 +509,95 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Applicant Details Modal */}
+      {viewingApplicant && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-lg mx-auto">
+            <CardHeader>
+              <CardTitle className="text-lg">Applicant Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col md:flex-row gap-6">
+                <div className="w-full md:w-1/3">
+                  {viewingApplicant.photoUrl ? (
+                    <img 
+                      src={viewingApplicant.photoUrl} 
+                      alt={`${viewingApplicant.firstName} ${viewingApplicant.lastName}`}
+                      className="rounded-md w-full aspect-square object-cover"
+                    />
+                  ) : (
+                    <div className="rounded-md w-full aspect-square bg-gray-200 flex items-center justify-center">
+                      <p className="text-gray-500">No photo available</p>
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="font-bold text-xl">
+                        {viewingApplicant.firstName} {viewingApplicant.lastName}
+                      </h3>
+                      <p className="text-gray-500">{viewingApplicant.location}</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm font-medium">Contact Information</p>
+                      <div className="mt-1 space-y-1">
+                        <p className="text-sm">Email: {viewingApplicant.email}</p>
+                        <p className="text-sm">Phone: {viewingApplicant.phone}</p>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm font-medium">Why They Want to Join</p>
+                      <p className="text-sm mt-1 whitespace-pre-wrap">{viewingApplicant.whyJoin}</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm font-medium">Applied On</p>
+                      <p className="text-sm mt-1">{formatDate(viewingApplicant.createdAt)}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex justify-end gap-2 mt-6">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setViewingApplicant(null)}
+                >
+                  Close
+                </Button>
+                <Button 
+                  variant="destructive"
+                  onClick={() => {
+                    rejectMutation.mutate(viewingApplicant.id);
+                    setViewingApplicant(null);
+                  }}
+                  disabled={rejectMutation.isPending}
+                >
+                  {rejectMutation.isPending ? (
+                    <><RefreshCcw className="h-4 w-4 mr-2 animate-spin" /> Rejecting...</>
+                  ) : 'Reject Applicant'}
+                </Button>
+                <Button 
+                  className="bg-[#FB4694]"
+                  onClick={() => {
+                    approveMutation.mutate(viewingApplicant.id);
+                    setViewingApplicant(null);
+                  }}
+                  disabled={approveMutation.isPending}
+                >
+                  {approveMutation.isPending ? (
+                    <><RefreshCcw className="h-4 w-4 mr-2 animate-spin" /> Approving...</>
+                  ) : 'Approve Applicant'}
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
