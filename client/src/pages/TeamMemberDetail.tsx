@@ -34,10 +34,14 @@ function getTeamMemberImage(member: TeamMember | null | undefined): string {
   
   // Original 4 members (gwen, ivalee, portia, sam) have name-based URLs
   const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
-  const nameLower = member.name.toLowerCase();
   
-  if (originalMembers.includes(nameLower)) {
-    return `/api/team-members/${nameLower}`;
+  // Ensure member.name exists before trying to use it
+  if (member.name) {
+    const nameLower = member.name.toLowerCase();
+    
+    if (originalMembers.includes(nameLower)) {
+      return `/api/team-members/${nameLower}`;
+    }
   }
   
   // For all other cases, use the image by ID endpoint
