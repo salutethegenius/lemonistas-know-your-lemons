@@ -22,10 +22,13 @@ export default function TeamMemberDetail() {
   const [isSelfieModalOpen, setIsSelfieModalOpen] = useState(false);
   const [isSelfieSuccessModalOpen, setIsSelfieSuccessModalOpen] = useState(false);
 
-  const { data: member, isLoading } = useQuery<TeamMember>({
-    queryKey: ["/api/team-members", memberId],
-    enabled: !!memberId,
+  // Fetch all team members and find the specific one by ID
+  const { data: allMembers, isLoading } = useQuery<TeamMember[]>({
+    queryKey: ["/api/team-members"],
   });
+
+  // Find the specific member by ID
+  const member = allMembers?.find(m => m.id === memberId);
 
   const handleOpenSelfieModal = () => {
     setIsSelfieModalOpen(true);
@@ -50,11 +53,7 @@ export default function TeamMemberDetail() {
       console.log("Member is undefined");
       return;
     }
-    console.log("Member data:", {
-      id: member.id,
-      name: member.name,
-      imageUrl: member.imageUrl
-    });
+    console.log("Member data:", JSON.stringify(member, null, 2));
   };
 
   // Function to handle sharing
@@ -150,17 +149,9 @@ export default function TeamMemberDetail() {
                 <div className="md:w-2/5">
                   <div className="rounded-xl overflow-hidden shadow-lg border border-gray-100">
                     <img 
-                      src={member.imageUrl ? member.imageUrl : (member.name ? `/api/team-members/${member.name.toLowerCase()}` : '')} 
-                      alt={member.name || 'Team member'} 
-                      className="w-full h-auto object-cover aspect-square" 
-                      onError={(e) => {
-                        // If the image fails to load, try the specific name-based image
-                        const target = e.target as HTMLImageElement;
-                        if (member.name && target.src !== `/api/team-members/${member.name.toLowerCase()}`) {
-                          console.log("Image failed to load, using API endpoint:", `/api/team-members/${member.name.toLowerCase()}`);
-                          target.src = `/api/team-members/${member.name.toLowerCase()}`;
-                        }
-                      }}
+                      src={`/api/team-members/${member.name.toLowerCase()}`}
+                      alt={member.name} 
+                      className="w-full h-auto object-cover aspect-square"
                     />
                   </div>
 
