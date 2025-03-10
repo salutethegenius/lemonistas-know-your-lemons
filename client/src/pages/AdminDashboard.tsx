@@ -49,6 +49,21 @@ export default function AdminDashboard() {
   const { data: selfies, isLoading: isSelfiesLoading } = useQuery<Selfie[]>({
     queryKey: ["/api/selfies"],
   });
+  
+  // Format date safely
+  const formatDate = (dateString: string | undefined | null) => {
+    if (!dateString) return "N/A";
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    } catch (error) {
+      console.error("Error formatting date:", error);
+      return "Invalid date";
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8F6F4]">
@@ -173,7 +188,7 @@ export default function AdminDashboard() {
                             <td className="py-4 px-4 text-sm">{applicant.email}</td>
                             <td className="py-4 px-4 text-sm">{applicant.location}</td>
                             <td className="py-4 px-4 text-sm">
-                              {new Date(applicant.createdAt).toLocaleDateString()}
+                              {formatDate(applicant.createdAt)}
                             </td>
                             <td className="py-4 px-4 text-sm">
                               <div className="flex gap-2">
@@ -245,7 +260,7 @@ export default function AdminDashboard() {
                             Taken with Team Member #{selfie.teamMemberId}
                           </p>
                           <p className="text-xs text-gray-500 mb-4">
-                            {new Date(selfie.createdAt).toLocaleDateString()}
+                            {formatDate(selfie.createdAt)}
                           </p>
                           <div className="flex gap-2">
                             <Button variant="outline" size="sm" className="text-xs bg-white">
