@@ -21,6 +21,11 @@ export function getTeamMemberImageUrl(member: TeamMember | null | undefined): st
     return member.imageUrl;
   }
   
+  // Check if member has a name property
+  if (!member.name) {
+    return '';
+  }
+  
   // Otherwise, construct the URL using the member's name
   return `/api/team-members/${member.name.toLowerCase()}`;
 }
