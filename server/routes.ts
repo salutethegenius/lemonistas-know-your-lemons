@@ -170,7 +170,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all applicants for admin dashboard
   app.get("/api/applicants", async (req: Request, res: Response) => {
     try {
-      const applicants = await storage.getAllApplicants();
+      // Check if we want pending only or all applicants
+      const showAll = req.query.all === 'true';
+      
+      let applicants;
+      if (showAll) {
+        applicants = await storage.getAllApplicants();
+      } else {
+        applicants = await storage.getPendingApplicants();
+      }
+      
       res.json(applicants);
     } catch (error) {
       console.error("Error fetching applicants:", error);
@@ -236,8 +245,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         imageUrl: applicant.photoUrl || ""
       });
 
-      // Optionally, we could delete or mark the applicant as approved
-      // For now, we'll leave the applicant in the system
+      // Mark the applicant as approved
+      await storage.updateApplicantStatus(id, "approved");
       
       res.status(200).json({ 
         success: true, 
@@ -247,6 +256,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error approving applicant:", error);
       res.status(500).json({ message: "Error approving applicant" });
+    }
+  });
+  
+  // Reject an applicant
+  app.post("/api/applicants/:id/reject", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid applicant ID" });
+      }
+      
+      // First get the applicant data
+      const applicant = await storage.getApplicant(id);
+      if (!applicant) {
+        return res.status(404).json({ message: "Applicant not found" });
+      }
+      
+      // Mark the applicant as rejected
+      await storage.updateApplicantStatus(id, "rejected");
+      
+      res.status(200).json({ 
+        success: true, 
+        message: "Applicant rejected successfully"
+      });
+    } catch (error) {
+      console.error("Error rejecting applicant:", error);
+      res.status(500).json({ message: "Error rejecting applicant" });
     }
   });
   

@@ -74,6 +74,54 @@ export default function AdminDashboard() {
     }
   });
   
+  // Mutation to reject an applicant
+  const rejectMutation = useMutation({
+    mutationFn: async (applicantId: number) => {
+      return await apiRequest(
+        "POST",
+        `/api/applicants/${applicantId}/reject`, 
+        { id: applicantId }
+      );
+    },
+    onSuccess: () => {
+      // Invalidate cache to refresh the applicants list
+      queryClient.invalidateQueries({ queryKey: ["/api/applicants"] });
+    }
+  });
+  
+  // Mutation to delete a team member
+  const deleteMemberMutation = useMutation({
+    mutationFn: async (memberId: number) => {
+      return await apiRequest(
+        "DELETE",
+        `/api/team-members/${memberId}`
+      );
+    },
+    onSuccess: () => {
+      // Invalidate cache to refresh the team members list
+      queryClient.invalidateQueries({ queryKey: ["/api/team-members"] });
+    }
+  });
+  
+  // State for editing team member
+  const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
+  
+  // Mutation to update a team member
+  const updateMemberMutation = useMutation({
+    mutationFn: async (data: { id: number, updates: Partial<TeamMember> }) => {
+      return await apiRequest(
+        "PUT",
+        `/api/team-members/${data.id}`,
+        data.updates
+      );
+    },
+    onSuccess: () => {
+      // Reset editing state and invalidate cache
+      setEditingMember(null);
+      queryClient.invalidateQueries({ queryKey: ["/api/team-members"] });
+    }
+  });
+  
   // Format date safely
   const formatDate = (dateString: string | undefined | null) => {
     if (!dateString) return "N/A";
@@ -162,11 +210,24 @@ export default function AdminDashboard() {
                             <span className="text-sm">{member.location}</span>
                           </div>
                           <div className="flex gap-2 mt-4">
-                            <Button variant="outline" size="sm" className="text-xs bg-white">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="text-xs bg-white"
+                              onClick={() => setEditingMember(member)}
+                            >
                               Edit
                             </Button>
-                            <Button variant="destructive" size="sm" className="text-xs">
-                              Remove
+                            <Button 
+                              variant="destructive" 
+                              size="sm" 
+                              className="text-xs"
+                              onClick={() => deleteMemberMutation.mutate(member.id)}
+                              disabled={deleteMemberMutation.isPending}
+                            >
+                              {deleteMemberMutation.isPending ? (
+                                <RefreshCcw className="h-3 w-3 mr-1 animate-spin" />
+                              ) : "Remove"}
                             </Button>
                           </div>
                         </CardContent>
@@ -222,9 +283,21 @@ export default function AdminDashboard() {
                                 <Button variant="outline" size="sm" className="text-xs bg-white">
                                   View
                                 </Button>
-                                <Button variant="destructive" size="sm" className="text-xs">
-                                  <UserMinus className="h-3 w-3 mr-1" />
-                                  Reject
+                                <Button 
+                                  variant="destructive" 
+                                  size="sm" 
+                                  className="text-xs"
+                                  onClick={() => rejectMutation.mutate(applicant.id)}
+                                  disabled={rejectMutation.isPending}
+                                >
+                                  {rejectMutation.isPending ? (
+                                    <RefreshCcw className="h-3 w-3 mr-1 animate-spin" />
+                                  ) : (
+                                    <>
+                                      <UserMinus className="h-3 w-3 mr-1" />
+                                      Reject
+                                    </>
+                                  )}
                                 </Button>
                                 <Button 
                                   variant="default" 
@@ -322,6 +395,110 @@ export default function AdminDashboard() {
         </Tabs>
       </div>
       <Footer />
+
+      {/* Edit Team Member Dialog */}
+      {editingMember && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <Card className="w-full max-w-md mx-auto">
+            <CardHeader>
+              <CardTitle className="text-lg">Edit Team Member</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const updates = {
+                  name: formData.get('name') as string,
+                  role: formData.get('role') as string,
+                  location: formData.get('location') as string,
+                  bio: formData.get('bio') as string,
+                  focus: formData.get('focus') as string,
+                };
+                
+                updateMemberMutation.mutate({
+                  id: editingMember.id,
+                  updates
+                });
+              }}>
+                <div className="space-y-4">
+                  <div className="grid gap-2">
+                    <label htmlFor="name" className="text-sm font-medium">Name</label>
+                    <input 
+                      id="name" 
+                      name="name" 
+                      className="p-2 border rounded-md" 
+                      defaultValue={editingMember.name}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <label htmlFor="role" className="text-sm font-medium">Role</label>
+                    <input 
+                      id="role" 
+                      name="role" 
+                      className="p-2 border rounded-md" 
+                      defaultValue={editingMember.role}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <label htmlFor="location" className="text-sm font-medium">Location</label>
+                    <input 
+                      id="location" 
+                      name="location" 
+                      className="p-2 border rounded-md" 
+                      defaultValue={editingMember.location}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <label htmlFor="focus" className="text-sm font-medium">Focus Areas</label>
+                    <input 
+                      id="focus" 
+                      name="focus" 
+                      className="p-2 border rounded-md" 
+                      defaultValue={editingMember.focus}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="grid gap-2">
+                    <label htmlFor="bio" className="text-sm font-medium">Biography</label>
+                    <textarea 
+                      id="bio" 
+                      name="bio" 
+                      className="p-2 border rounded-md min-h-[100px]" 
+                      defaultValue={editingMember.bio}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="flex justify-end gap-2 mt-4">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={() => setEditingMember(null)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button 
+                      type="submit"
+                      disabled={updateMemberMutation.isPending}
+                    >
+                      {updateMemberMutation.isPending ? (
+                        <><RefreshCcw className="h-4 w-4 mr-2 animate-spin" /> Updating...</>
+                      ) : 'Save Changes'}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }
