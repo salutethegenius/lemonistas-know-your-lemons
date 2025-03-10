@@ -1,13 +1,21 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TeamMember, getTeamMemberImageUrl } from "@/lib/teamMembers";
+import { TeamMember } from "@/lib/teamMembers";
 import { UserPlus } from "lucide-react";
 
 // Helper function to get the proper image for a team member
 function getTeamMemberImage(member: TeamMember): string {
-  // Simply use the centralized helper function to ensure consistent image URLs across the app
-  return getTeamMemberImageUrl(member);
+  // Original 4 members (gwen, ivalee, portia, sam) have name-based URLs
+  const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
+  const nameLower = member.name.toLowerCase();
+  
+  if (originalMembers.includes(nameLower)) {
+    return `/api/team-members/${nameLower}`;
+  }
+  
+  // For all other cases, use the image by ID endpoint
+  return `/api/team-members/image/${member.id}`;
 }
 
 interface TeamGridProps {

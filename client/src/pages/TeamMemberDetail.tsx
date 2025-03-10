@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Linkedin, Mail, Share2, Twitter, Facebook, Camera } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TeamMember, getTeamMemberImageUrl } from "@/lib/teamMembers";
+import { TeamMember } from "@/lib/teamMembers";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 import SelfieUploadModal from "@/components/SelfieUploadModal";
@@ -32,8 +32,16 @@ function getTeamMemberImage(member: TeamMember | null | undefined): string {
     return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
   }
   
-  // Simply use the centralized helper function to ensure consistent image URLs across the app
-  return getTeamMemberImageUrl(member);
+  // Original 4 members (gwen, ivalee, portia, sam) have name-based URLs
+  const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
+  const nameLower = member.name.toLowerCase();
+  
+  if (originalMembers.includes(nameLower)) {
+    return `/api/team-members/${nameLower}`;
+  }
+  
+  // For all other cases, use the image by ID endpoint
+  return `/api/team-members/image/${member.id}`;
 }
 
 export default function TeamMemberDetail() {
