@@ -5,7 +5,10 @@ import TeamGrid from "@/components/TeamGrid";
 import Footer from "@/components/Footer";
 import JoinFormModal from "@/components/JoinFormModal";
 import SuccessModal from "@/components/SuccessModal";
+import SelfieUploadModal from "@/components/SelfieUploadModal";
 import { TeamMember } from "@/lib/teamMembers";
+import { Button } from "@/components/ui/button";
+import { Camera } from "lucide-react";
 
 export default function Home() {
   const [isJoinFormOpen, setIsJoinFormOpen] = useState(false);
