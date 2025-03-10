@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
 import Hero from "@/components/Hero";
 import TeamGrid from "@/components/TeamGrid";
 import Footer from "@/components/Footer";
@@ -35,21 +37,21 @@ export default function Home() {
   return (
     <div className="bg-[#F8F6F4] font-montserrat text-[#292929] min-h-screen">
       <Hero onJoinClick={handleOpenJoinForm} />
-      
+
       <TeamGrid 
         teamMembers={teamMembers || []} 
         isLoading={isLoading} 
         onJoinClick={handleOpenJoinForm}
       />
       <Footer />
-      
+
       {isJoinFormOpen && (
         <JoinFormModal 
           onClose={handleCloseJoinForm} 
           onSuccess={handleFormSuccess}
         />
       )}
-      
+
       {isSuccessModalOpen && (
         <SuccessModal onClose={handleCloseSuccessModal} />
       )}
