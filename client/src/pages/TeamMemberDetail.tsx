@@ -3,9 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Linkedin, Mail, Share2, Twitter, Facebook, Camera } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TeamMember, getTeamMemberImageUrl } from "@/lib/teamMembers";
+import { TeamMember } from "@/lib/teamMembers";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 import SelfieUploadModal from "@/components/SelfieUploadModal";
@@ -45,6 +44,42 @@ export default function TeamMemberDetail() {
     setIsSelfieSuccessModalOpen(false);
   };
 
+  // Get image URL for the member
+  const getMemberImageUrl = (member: TeamMember | undefined | null): string => {
+    if (!member || !member.name) {
+      return '';
+    }
+    return `/api/team-members/${member.name.toLowerCase()}`;
+  };
+
+  // Function to handle sharing
+  const shareProfile = (platform: string) => {
+    if (!member) return;
+    
+    const url = window.location.href;
+    const text = `Check out ${member.name}, ${member.role} at Lemonistas!`;
+    let shareUrl = '';
+
+    switch(platform) {
+      case 'twitter':
+        shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
+        break;
+      case 'facebook':
+        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+        break;
+      case 'linkedin':
+        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+        break;
+      case 'email':
+        shareUrl = `mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent(url)}`;
+        break;
+    }
+
+    if (shareUrl) {
+      window.open(shareUrl, '_blank');
+    }
+  };
+
   if (isLoading) {
     return <TeamMemberDetailSkeleton />;
   }
@@ -74,32 +109,7 @@ export default function TeamMemberDetail() {
     );
   }
 
-  // Function to handle sharing
-  const shareProfile = (platform: string) => {
-    const url = window.location.href;
-    const text = `Check out ${member.name}, ${member.role} at Lemonistas!`;
-
-    let shareUrl = '';
-
-    switch(platform) {
-      case 'twitter':
-        shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
-        break;
-      case 'facebook':
-        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
-        break;
-      case 'linkedin':
-        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
-        break;
-      case 'email':
-        shareUrl = `mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent(url)}`;
-        break;
-    }
-
-    if (shareUrl) {
-      window.open(shareUrl, '_blank');
-    }
-  };
+  const memberImageUrl = getMemberImageUrl(member);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F8F6F4]">
@@ -133,11 +143,13 @@ export default function TeamMemberDetail() {
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-2/5">
                   <div className="rounded-xl overflow-hidden shadow-lg border border-gray-100">
-                    <img 
-                      src={getTeamMemberImageUrl(member)} 
-                      alt={member.name} 
-                      className="w-full h-auto object-cover aspect-square" 
-                    />
+                    {memberImageUrl && (
+                      <img 
+                        src={memberImageUrl} 
+                        alt={member.name} 
+                        className="w-full h-auto object-cover aspect-square" 
+                      />
+                    )}
                   </div>
 
                   <div className="mt-6">
