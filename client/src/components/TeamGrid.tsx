@@ -30,7 +30,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
                   <Card className="team-card transition-all duration-300 bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden cursor-pointer h-full">
                     <div className="h-64 overflow-hidden">
                       <img 
-                        src={`http://localhost:5000/api/team-members/${member.name.toLowerCase()}`}
+                        src={`/api/team-members/${member.name.toLowerCase()}`}
                         alt={member.name} 
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" 
                       />

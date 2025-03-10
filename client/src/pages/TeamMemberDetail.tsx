@@ -134,7 +134,7 @@ export default function TeamMemberDetail() {
                 <div className="md:w-2/5">
                   <div className="rounded-xl overflow-hidden shadow-lg border border-gray-100">
                     <img 
-                      src={`http://localhost:5000${member.imageUrl}`} 
+                      src={member.imageUrl} 
                       alt={member.name} 
                       className="w-full h-auto object-cover aspect-square" 
                     />
