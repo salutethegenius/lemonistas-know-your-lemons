@@ -150,13 +150,13 @@ export default function TeamMemberDetail() {
                 <div className="md:w-2/5">
                   <div className="rounded-xl overflow-hidden shadow-lg border border-gray-100">
                     <img 
-                      src={member.imageUrl ? member.imageUrl : `/api/team-members/${member.name.toLowerCase()}`} 
-                      alt={member.name} 
+                      src={member.imageUrl ? member.imageUrl : (member.name ? `/api/team-members/${member.name.toLowerCase()}` : '')} 
+                      alt={member.name || 'Team member'} 
                       className="w-full h-auto object-cover aspect-square" 
                       onError={(e) => {
                         // If the image fails to load, try the specific name-based image
                         const target = e.target as HTMLImageElement;
-                        if (target.src !== `/api/team-members/${member.name.toLowerCase()}`) {
+                        if (member.name && target.src !== `/api/team-members/${member.name.toLowerCase()}`) {
                           console.log("Image failed to load, using API endpoint:", `/api/team-members/${member.name.toLowerCase()}`);
                           target.src = `/api/team-members/${member.name.toLowerCase()}`;
                         }
@@ -248,7 +248,7 @@ export default function TeamMemberDetail() {
                       className="w-full flex items-center justify-center space-x-2 bg-[#FB4694] hover:bg-[#FB4694]/90 text-white py-3 rounded-xl"
                     >
                       <Camera className="h-5 w-5 mr-2" />
-                      <span>Upload Selfie with {member.name}</span>
+                      <span>Upload Selfie with {member.name || 'Team Member'}</span>
                     </Button>
                   </div>
                 </div>
@@ -283,7 +283,7 @@ export default function TeamMemberDetail() {
       <Footer />
 
       {/* Selfie Upload Modal */}
-      {isSelfieModalOpen && member && (
+      {isSelfieModalOpen && member && member.id && member.name && (
         <SelfieUploadModal 
           onClose={handleCloseSelfieModal} 
           onSuccess={handleSelfieSuccess}
