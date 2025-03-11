@@ -16,27 +16,32 @@ export function getTeamMemberImageUrl(member: TeamMember | null | undefined): st
     return '';
   }
   
-  // Ensure member.name exists before trying to use it
-  if (!member.name) {
-    // If member has no name, fall back to the ID-based endpoint
-    return `/api/team-members/image/${member.id}`;
-  }
-  
-  // Original 4 members (gwen, ivalee, portia, sam) have name-based URLs
-  const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
-  const nameLower = member.name.toLowerCase();
-  
-  if (originalMembers.includes(nameLower)) {
-    return `/api/team-members/${nameLower}`;
+  // Handle original 4 members with direct image paths from the images folder
+  if (member.name) {
+    const nameLower = member.name.toLowerCase();
+    
+    // Direct mapping for original members
+    if (nameLower === 'gwen') {
+      return "/src/images/Gwen.jpg";
+    } else if (nameLower === 'ivalee') {
+      return "/src/images/Ivalee.jpg";
+    } else if (nameLower === 'portia') {
+      return "/src/images/Portia Ebraim.jpg";
+    } else if (nameLower === 'sam') {
+      return "/src/images/Sam (1).jpg";
+    }
   }
   
   // If member has a direct URL (http/https), use it directly
   if (member.imageUrl && (member.imageUrl.startsWith('http://') || member.imageUrl.startsWith('https://'))) {
     return member.imageUrl;
+  } else if (member.imageUrl) {
+    // Use any provided imageUrl
+    return member.imageUrl;
   }
   
-  // For all other cases, use the image by ID endpoint
-  return `/api/team-members/image/${member.id}`;
+  // Fallback to placeholder
+  return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
 }
 
 export interface ApplicantFormData {

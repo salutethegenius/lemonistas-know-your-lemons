@@ -24,24 +24,28 @@ function getTeamMemberImage(member: TeamMember | null | undefined): string {
     return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
   }
   
-  // Original 4 members (gwen, ivalee, portia, sam) have name-based URLs
-  const originalMembers = ['gwen', 'ivalee', 'portia', 'sam'];
-  
-  // Ensure member.name exists before trying to use it
+  // Original 4 members have direct image paths in the images folder
   if (member.name) {
     const nameLower = member.name.toLowerCase();
     
-    if (originalMembers.includes(nameLower)) {
-      return `/api/team-members/${nameLower}`;
+    // Direct mapping for original members
+    if (nameLower === 'gwen') {
+      return "/src/images/Gwen.jpg";
+    } else if (nameLower === 'ivalee') {
+      return "/src/images/Ivalee.jpg";
+    } else if (nameLower === 'portia') {
+      return "/src/images/Portia Ebraim.jpg";
+    } else if (nameLower === 'sam') {
+      return "/src/images/Sam (1).jpg";
     }
   }
   
-  // For all other cases, use the image by ID endpoint if member.id exists
-  if (member.id) {
-    return `/api/team-members/image/${member.id}`;
+  // For all other members, use imageUrl if available
+  if (member.imageUrl) {
+    return member.imageUrl;
   }
   
-  // Fallback if member.id doesn't exist
+  // Fallback for any case without an image
   return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
 }
 
