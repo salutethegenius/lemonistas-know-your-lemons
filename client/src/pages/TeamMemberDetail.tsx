@@ -16,15 +16,7 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip";
 
-// Interface for Selfies linked to team members
-interface Selfie {
-  id: number;
-  location: string;
-  caption: string;
-  teamMemberId: number;
-  createdAt: string;
-  photoUrl: string | null;
-}
+// Interface definition for Selfie removed as it's no longer needed
 
 // Function to generate the appropriate image URL for a team member
 function getTeamMemberImage(member: TeamMember | null | undefined): string {
@@ -73,17 +65,8 @@ export default function TeamMemberDetail() {
     enabled: memberId !== null,
   });
 
-  // Fetch selfies for this team member
-  const { 
-    data: memberSelfies = [], 
-    isLoading: isLoadingSelfies 
-  } = useQuery<Selfie[]>({
-    queryKey: ["/api/team-members", memberId, "selfies"],
-    enabled: memberId !== null,
-  });
-
   // Determine if any data is still loading
-  const isLoading = isLoadingMembers || isLoadingMemberData || isLoadingSelfies;
+  const isLoading = isLoadingMembers || isLoadingMemberData;
 
   // Find the specific member by ID (either from the list or direct query)
   const member = memberData || allMembers?.find(m => m.id === memberId);
@@ -329,62 +312,7 @@ export default function TeamMemberDetail() {
                     </Button>
                   </div>
                   
-                  {/* Selfies section */}
-                  <div className="mt-8">
-                    <h4 className="font-poppins font-semibold mb-4">Community Selfies</h4>
-                    {isLoadingSelfies ? (
-                      // Show skeleton while loading selfies
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {[1, 2].map((n) => (
-                          <Card key={`selfie-skeleton-${n}`} className="overflow-hidden">
-                            <Skeleton className="h-48 w-full" />
-                            <CardContent className="p-3">
-                              <Skeleton className="h-4 w-3/4 mb-2" />
-                              <Skeleton className="h-3 w-1/2 mb-2" />
-                              <Skeleton className="h-3 w-1/3" />
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    ) : memberSelfies && memberSelfies.length > 0 ? (
-                      // Show selfies when loaded
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        {memberSelfies.map((selfie) => (
-                          <Card key={selfie.id} className="overflow-hidden">
-                            <div className="h-48 overflow-hidden">
-                              {selfie.photoUrl ? (
-                                <img 
-                                  src={selfie.photoUrl} 
-                                  alt={`Selfie with ${member.name}`} 
-                                  className="w-full h-full object-cover"
-                                  onError={(e) => {
-                                    e.currentTarget.src = "https://placehold.co/400x400/f8f6f4/FB4694?text=Selfie&font=poppins";
-                                  }}
-                                />
-                              ) : (
-                                <div className="w-full h-full flex items-center justify-center bg-gray-100">
-                                  <Camera className="h-8 w-8 text-gray-400" />
-                                </div>
-                              )}
-                            </div>
-                            <CardContent className="p-3">
-                              <p className="text-sm font-medium mb-1">{selfie.caption}</p>
-                              <p className="text-xs text-gray-500 mb-1">{selfie.location}</p>
-                              <p className="text-xs text-gray-400">
-                                {new Date(selfie.createdAt).toLocaleDateString()}
-                              </p>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    ) : (
-                      // Show message when no selfies
-                      <div className="text-center p-6 bg-gray-50 rounded-lg">
-                        <Camera className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                        <p className="text-gray-500">No selfies yet. Be the first to upload one!</p>
-                      </div>
-                    )}
-                  </div>
+                  {/* Selfie section removed as requested */}
                 </div>
               </div>
             </div>
