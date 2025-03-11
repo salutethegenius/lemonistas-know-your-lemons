@@ -30,13 +30,13 @@ function getTeamMemberImage(member: TeamMember | null | undefined): string {
     
     // Direct mapping for original members
     if (nameLower === 'gwen') {
-      return "/src/images/Gwen.jpg";
+      return "/api/team-members/gwen";
     } else if (nameLower === 'ivalee') {
-      return "/src/images/Ivalee.jpg";
+      return "/api/team-members/ivalee";
     } else if (nameLower === 'portia') {
-      return "/src/images/Portia Ebraim.jpg";
+      return "/api/team-members/portia";
     } else if (nameLower === 'sam') {
-      return "/src/images/Sam (1).jpg";
+      return "/api/team-members/sam";
     }
   }
   

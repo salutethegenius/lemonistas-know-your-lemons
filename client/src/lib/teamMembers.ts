@@ -16,28 +16,30 @@ export function getTeamMemberImageUrl(member: TeamMember | null | undefined): st
     return '';
   }
   
-  // Handle original 4 members with direct image paths from the images folder
+  // Original 4 members use API endpoints
   if (member.name) {
     const nameLower = member.name.toLowerCase();
     
     // Direct mapping for original members
     if (nameLower === 'gwen') {
-      return "/src/images/Gwen.jpg";
+      return "/api/team-members/gwen";
     } else if (nameLower === 'ivalee') {
-      return "/src/images/Ivalee.jpg";
+      return "/api/team-members/ivalee";
     } else if (nameLower === 'portia') {
-      return "/src/images/Portia Ebraim.jpg";
+      return "/api/team-members/portia";
     } else if (nameLower === 'sam') {
-      return "/src/images/Sam (1).jpg";
+      return "/api/team-members/sam";
     }
   }
   
   // If member has a direct URL (http/https), use it directly
   if (member.imageUrl && (member.imageUrl.startsWith('http://') || member.imageUrl.startsWith('https://'))) {
     return member.imageUrl;
-  } else if (member.imageUrl) {
-    // Use any provided imageUrl
-    return member.imageUrl;
+  }
+  
+  // For all other members, use image by ID endpoint
+  if (member.id) {
+    return `/api/team-members/image/${member.id}`;
   }
   
   // Fallback to placeholder

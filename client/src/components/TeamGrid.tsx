@@ -6,25 +6,25 @@ import { UserPlus } from "lucide-react";
 
 // Helper function to get the proper image for a team member
 function getTeamMemberImage(member: TeamMember): string {
-  // Original 4 members have direct image paths in the images folder
+  // Original 4 members use API endpoints
   if (member.name) {
     const nameLower = member.name.toLowerCase();
     
     // Direct mapping for original members
     if (nameLower === 'gwen') {
-      return "/src/images/Gwen.jpg";
+      return "/api/team-members/gwen";
     } else if (nameLower === 'ivalee') {
-      return "/src/images/Ivalee.jpg";
+      return "/api/team-members/ivalee";
     } else if (nameLower === 'portia') {
-      return "/src/images/Portia Ebraim.jpg";
+      return "/api/team-members/portia";
     } else if (nameLower === 'sam') {
-      return "/src/images/Sam (1).jpg";
+      return "/api/team-members/sam";
     }
   }
   
-  // For all other members, use imageUrl if available
-  if (member.imageUrl) {
-    return member.imageUrl;
+  // For all other members, use image by ID endpoint
+  if (member.id) {
+    return `/api/team-members/image/${member.id}`;
   }
   
   // Fallback for any case without an image
