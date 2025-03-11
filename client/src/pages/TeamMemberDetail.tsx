@@ -60,21 +60,30 @@ export default function TeamMemberDetail() {
   const [isSelfieSuccessModalOpen, setIsSelfieSuccessModalOpen] = useState(false);
 
   // Fetch all team members and find the specific one by ID
-  const { data: allMembers, isLoading } = useQuery<TeamMember[]>({
+  const { data: allMembers, isLoading: isLoadingMembers } = useQuery<TeamMember[]>({
     queryKey: ["/api/team-members"],
   });
 
   // Use a dedicated query to get the member details if needed
-  const { data: memberData } = useQuery<TeamMember>({
+  const { 
+    data: memberData, 
+    isLoading: isLoadingMemberData 
+  } = useQuery<TeamMember>({
     queryKey: ["/api/team-members", memberId],
     enabled: memberId !== null,
   });
 
   // Fetch selfies for this team member
-  const { data: memberSelfies = [] } = useQuery<Selfie[]>({
+  const { 
+    data: memberSelfies = [], 
+    isLoading: isLoadingSelfies 
+  } = useQuery<Selfie[]>({
     queryKey: ["/api/team-members", memberId, "selfies"],
     enabled: memberId !== null,
   });
+
+  // Determine if any data is still loading
+  const isLoading = isLoadingMembers || isLoadingMemberData || isLoadingSelfies;
 
   // Find the specific member by ID (either from the list or direct query)
   const member = memberData || allMembers?.find(m => m.id === memberId);
@@ -320,10 +329,25 @@ export default function TeamMemberDetail() {
                     </Button>
                   </div>
                   
-                  {/* Selfies section - show only if there are selfies */}
-                  {memberSelfies && memberSelfies.length > 0 && (
-                    <div className="mt-8">
-                      <h4 className="font-poppins font-semibold mb-4">Community Selfies</h4>
+                  {/* Selfies section */}
+                  <div className="mt-8">
+                    <h4 className="font-poppins font-semibold mb-4">Community Selfies</h4>
+                    {isLoadingSelfies ? (
+                      // Show skeleton while loading selfies
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {[1, 2].map((n) => (
+                          <Card key={`selfie-skeleton-${n}`} className="overflow-hidden">
+                            <Skeleton className="h-48 w-full" />
+                            <CardContent className="p-3">
+                              <Skeleton className="h-4 w-3/4 mb-2" />
+                              <Skeleton className="h-3 w-1/2 mb-2" />
+                              <Skeleton className="h-3 w-1/3" />
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : memberSelfies && memberSelfies.length > 0 ? (
+                      // Show selfies when loaded
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {memberSelfies.map((selfie) => (
                           <Card key={selfie.id} className="overflow-hidden">
@@ -353,8 +377,14 @@ export default function TeamMemberDetail() {
                           </Card>
                         ))}
                       </div>
-                    </div>
-                  )}
+                    ) : (
+                      // Show message when no selfies
+                      <div className="text-center p-6 bg-gray-50 rounded-lg">
+                        <Camera className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                        <p className="text-gray-500">No selfies yet. Be the first to upload one!</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

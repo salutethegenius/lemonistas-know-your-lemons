@@ -21,46 +21,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Team member image routes - must be before /:id route to avoid conflict
-  app.get("/api/team-members/gwen", (req: Request, res: Response) => {
-    const imagePath = path.join(__dirname, "../assets/Gwen.jpg");
+  // Use a helper function to handle image requests for known team members
+  const sendTeamMemberImage = (imagePath: string, res: Response) => {
+    // Cache the image response for faster loading (5 minutes cache)
+    res.set('Cache-Control', 'public, max-age=300');
+    
     // Handle missing file
     if (!fs.existsSync(imagePath)) {
+      const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
+      if (fs.existsSync(defaultImagePath)) {
+        return res.sendFile(defaultImagePath);
+      }
       return res.status(404).send("Image not found");
     }
     res.sendFile(imagePath);
+  };
+  
+  // Define original team member image routes with caching
+  app.get("/api/team-members/gwen", (req: Request, res: Response) => {
+    sendTeamMemberImage(path.join(__dirname, "../assets/Gwen.jpg"), res);
   });
   
   app.get("/api/team-members/ivalee", (req: Request, res: Response) => {
-    const imagePath = path.join(__dirname, "../assets/Ivalee.jpg");
-    // Handle missing file
-    if (!fs.existsSync(imagePath)) {
-      return res.status(404).send("Image not found");
-    }
-    res.sendFile(imagePath);
+    sendTeamMemberImage(path.join(__dirname, "../assets/Ivalee.jpg"), res);
   });
   
   app.get("/api/team-members/portia", (req: Request, res: Response) => {
-    const imagePath = path.join(__dirname, "../assets/Portia Ebraim.jpg");
-    // Handle missing file
-    if (!fs.existsSync(imagePath)) {
-      return res.status(404).send("Image not found");
-    }
-    res.sendFile(imagePath);
+    sendTeamMemberImage(path.join(__dirname, "../assets/Portia Ebraim.jpg"), res);
   });
   
   app.get("/api/team-members/sam", (req: Request, res: Response) => {
-    const imagePath = path.join(__dirname, "../assets/Sam (1).jpg");
-    // Handle missing file
-    if (!fs.existsSync(imagePath)) {
-      return res.status(404).send("Image not found");
-    }
-    res.sendFile(imagePath);
+    sendTeamMemberImage(path.join(__dirname, "../assets/Sam (1).jpg"), res);
   });
   
   // Generic route to handle any team member images by ID
   // This is important for handling new members approved from applications
   app.get("/api/team-members/image/:id", async (req: Request, res: Response) => {
     try {
+      // Add cache headers for performance (1 hour cache)
+      res.set('Cache-Control', 'public, max-age=3600');
+      
       // Handle undefined or invalid IDs
       if (!req.params.id || req.params.id === 'undefined') {
         // Send a default image instead of an error
@@ -78,6 +78,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const teamMember = await storage.getTeamMember(id);
       if (!teamMember) {
+        // Return default image with cache headers instead of 404
+        const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
+        if (fs.existsSync(defaultImagePath)) {
+          return res.sendFile(defaultImagePath);
+        }
         return res.status(404).json({ message: "Team member not found" });
       }
       
@@ -99,6 +104,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(404).json({ message: "Image not available" });
     } catch (error) {
       console.error("Error fetching team member image:", error);
+      
+      // Even on error, try to return a default image
+      const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
+      if (fs.existsSync(defaultImagePath)) {
+        return res.sendFile(defaultImagePath);
+      }
+      
       res.status(500).json({ message: "Error fetching team member image" });
     }
   });
