@@ -80,7 +80,7 @@ export default function TeamMemberDetail() {
     error: memberError 
   } = useQuery({
     queryKey: ["/api/team-members", memberId],
-    queryFn: () => fetchTeamMember(memberId),
+    queryFn: () => memberId !== null ? fetchTeamMember(memberId) : Promise.resolve(null),
     enabled: memberId !== null,
   });
 
@@ -89,7 +89,7 @@ export default function TeamMemberDetail() {
   const error = membersError || memberError;
 
   // Find the specific member by ID (either from the list or direct query)
-  const member = memberData || (allMembers?.find(m => m.id === memberId));
+  const member = memberData || (allMembers?.find((m: TeamMember) => m.id === memberId));
 
   const handleOpenSelfieModal = () => setIsSelfieModalOpen(true);
   const handleCloseSelfieModal = () => setIsSelfieModalOpen(false);
@@ -100,7 +100,7 @@ export default function TeamMemberDetail() {
   const handleCloseSelfieSuccessModal = () => setIsSelfieSuccessModalOpen(false);
 
   // Function to handle sharing
-  const shareProfile = (platform) => {
+  const shareProfile = (platform: string) => {
     if (!member) return;
 
     const url = window.location.href;
