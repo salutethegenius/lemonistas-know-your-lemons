@@ -13,21 +13,21 @@ export interface TeamMember {
 export function getTeamMemberImageUrl(member: TeamMember | null | undefined): string {
   // Handle undefined member case
   if (!member) {
-    return '';
+    return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
   }
   
-  // Original 4 members use API endpoints
+  // Original 4 members have direct name-based endpoints
   if (member.name) {
-    const nameLower = member.name.toLowerCase();
+    // Case-insensitive check for original team members
+    const nameLower = member.name.toLowerCase().trim();
     
-    // Direct mapping for original members
-    if (nameLower === 'gwen') {
+    if (nameLower.includes('gwen')) {
       return "/api/team-members/gwen";
-    } else if (nameLower === 'ivalee') {
+    } else if (nameLower.includes('ivalee')) {
       return "/api/team-members/ivalee";
-    } else if (nameLower === 'portia') {
+    } else if (nameLower.includes('portia')) {
       return "/api/team-members/portia";
-    } else if (nameLower === 'sam') {
+    } else if (nameLower.includes('sam')) {
       return "/api/team-members/sam";
     }
   }

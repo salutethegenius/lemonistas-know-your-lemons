@@ -1,35 +1,11 @@
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TeamMember } from "@/lib/teamMembers";
+import { TeamMember, getTeamMemberImageUrl } from "@/lib/teamMembers";
 import { UserPlus } from "lucide-react";
 
-// Helper function to get the proper image for a team member
-function getTeamMemberImage(member: TeamMember): string {
-  // Original 4 members use API endpoints
-  if (member.name) {
-    const nameLower = member.name.toLowerCase();
-    
-    // Direct mapping for original members
-    if (nameLower === 'gwen') {
-      return "/api/team-members/gwen";
-    } else if (nameLower === 'ivalee') {
-      return "/api/team-members/ivalee";
-    } else if (nameLower === 'portia') {
-      return "/api/team-members/portia";
-    } else if (nameLower === 'sam') {
-      return "/api/team-members/sam";
-    }
-  }
-  
-  // For all other members, use image by ID endpoint
-  if (member.id) {
-    return `/api/team-members/image/${member.id}`;
-  }
-  
-  // Fallback for any case without an image
-  return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
-}
+// Use the centralized image URL function
+const getTeamMemberImage = getTeamMemberImageUrl;
 
 interface TeamGridProps {
   teamMembers: TeamMember[];

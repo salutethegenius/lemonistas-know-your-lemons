@@ -76,8 +76,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid team member ID" });
       }
       
+      // Enhanced logging for debugging
+      console.log(`Getting image for team member ID: ${id}`);
+      
       const teamMember = await storage.getTeamMember(id);
       if (!teamMember) {
+        console.log(`Team member not found with ID: ${id}`);
         // Return default image with cache headers instead of 404
         const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
         if (fs.existsSync(defaultImagePath)) {
@@ -86,21 +90,51 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Team member not found" });
       }
       
+      console.log(`Team member found. Name: ${teamMember.name}, ImageUrl: ${teamMember.imageUrl}`);
+      
+      // Special case: look up by name for the original 4 members
+      const nameLower = teamMember.name.toLowerCase().trim();
+      if (nameLower.includes('gwen')) {
+        console.log(`Serving Gwen's image for team member ID: ${id}`);
+        return sendTeamMemberImage(path.join(__dirname, "../assets/Gwen.jpg"), res);
+      } else if (nameLower.includes('ivalee')) {
+        console.log(`Serving Ivalee's image for team member ID: ${id}`);
+        return sendTeamMemberImage(path.join(__dirname, "../assets/Ivalee.jpg"), res);
+      } else if (nameLower.includes('portia')) {
+        console.log(`Serving Portia's image for team member ID: ${id}`);
+        return sendTeamMemberImage(path.join(__dirname, "../assets/Portia Ebraim.jpg"), res);
+      } else if (nameLower.includes('sam')) {
+        console.log(`Serving Sam's image for team member ID: ${id}`);
+        return sendTeamMemberImage(path.join(__dirname, "../assets/Sam (1).jpg"), res);
+      }
+      
       // If the imageUrl is an absolute URL, redirect to it
       if (teamMember.imageUrl && (teamMember.imageUrl.startsWith('http://') || teamMember.imageUrl.startsWith('https://'))) {
+        console.log(`Redirecting to external URL: ${teamMember.imageUrl}`);
         return res.redirect(teamMember.imageUrl);
-      } else if (teamMember.imageUrl) {
-        // If it's a non-empty string but not an absolute URL, try to send it
+      } else if (teamMember.imageUrl && teamMember.imageUrl.trim() !== "") {
+        console.log(`Using imageUrl: ${teamMember.imageUrl}`);
+        // Check if it's a local file that exists
+        const possibleLocalFile = path.join(__dirname, "..", teamMember.imageUrl);
+        if (fs.existsSync(possibleLocalFile)) {
+          console.log(`Found local file at: ${possibleLocalFile}`);
+          return res.sendFile(possibleLocalFile);
+        }
+        
+        // If it's not a local file but still has a path, try to redirect
+        console.log(`Redirecting to imageUrl: ${teamMember.imageUrl}`);
         return res.redirect(teamMember.imageUrl);
       }
       
       // If no valid image URL is available, send a default image
+      console.log(`No valid image URL found, serving default image`);
       const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
       if (fs.existsSync(defaultImagePath)) {
         return res.sendFile(defaultImagePath);
       }
       
       // Last resort - return a 404 if even the default image isn't available
+      console.log(`Default image not found, sending 404`);
       res.status(404).json({ message: "Image not available" });
     } catch (error) {
       console.error("Error fetching team member image:", error);

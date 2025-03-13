@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Linkedin, Mail, Share2, Twitter, Facebook, Camera } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TeamMember } from "@/lib/teamMembers";
+import { TeamMember, getTeamMemberImageUrl } from "@/lib/teamMembers";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 import SelfieUploadModal from "@/components/SelfieUploadModal";
@@ -18,36 +18,8 @@ import {
 
 // Interface definition for Selfie removed as it's no longer needed
 
-// Function to generate the appropriate image URL for a team member
-function getTeamMemberImage(member: TeamMember | null | undefined): string {
-  if (!member) {
-    return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
-  }
-  
-  // Original 4 members have direct image paths in the images folder
-  if (member.name) {
-    const nameLower = member.name.toLowerCase();
-    
-    // Direct mapping for original members
-    if (nameLower === 'gwen') {
-      return "/api/team-members/gwen";
-    } else if (nameLower === 'ivalee') {
-      return "/api/team-members/ivalee";
-    } else if (nameLower === 'portia') {
-      return "/api/team-members/portia";
-    } else if (nameLower === 'sam') {
-      return "/api/team-members/sam";
-    }
-  }
-  
-  // For all other members, use imageUrl if available
-  if (member.imageUrl) {
-    return member.imageUrl;
-  }
-  
-  // Fallback for any case without an image
-  return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
-}
+// Use the utility function from teamMembers.ts
+const getTeamMemberImage = getTeamMemberImageUrl;
 
 export default function TeamMemberDetail() {
   const [match, params] = useRoute("/team-member/:id");
