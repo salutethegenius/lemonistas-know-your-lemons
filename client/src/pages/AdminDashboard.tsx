@@ -426,7 +426,7 @@ export default function AdminDashboard() {
               <form onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
-                const updates = {
+                const updates: Partial<TeamMember> = {
                   name: formData.get('name') as string,
                   role: formData.get('role') as string,
                   location: formData.get('location') as string,
@@ -434,12 +434,62 @@ export default function AdminDashboard() {
                   focus: formData.get('focus') as string,
                 };
                 
+                // Get the image URL from the form
+                const imageUrl = formData.get('imageUrl') as string;
+                if (imageUrl && imageUrl !== editingMember.imageUrl) {
+                  updates.imageUrl = imageUrl;
+                }
+                
                 updateMemberMutation.mutate({
                   id: editingMember.id,
                   updates
                 });
               }}>
                 <div className="space-y-4">
+                  {/* Current Photo Preview */}
+                  <div className="grid gap-2">
+                    <label className="text-sm font-medium">Current Photo</label>
+                    <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4">
+                      <div className="w-32 h-32 overflow-hidden border rounded-md">
+                        <img
+                          src={getTeamMemberImage(editingMember)}
+                          alt={editingMember.name}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
+                          }}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <div className="grid gap-2">
+                          <label htmlFor="imageUrl" className="text-sm font-medium">Photo URL</label>
+                          <input 
+                            id="imageUrl" 
+                            name="imageUrl" 
+                            className="p-2 border rounded-md w-full" 
+                            defaultValue={editingMember.imageUrl}
+                            placeholder="Enter image URL or path"
+                          />
+                        </div>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          size="sm"
+                          className="text-xs mt-1"
+                          onClick={() => {
+                            // Set image URL to Lemonistas card (reset to default)
+                            const imageUrlInput = document.getElementById('imageUrl') as HTMLInputElement;
+                            if (imageUrlInput) {
+                              imageUrlInput.value = "/attached_assets/Lemonistas card.png";
+                            }
+                          }}
+                        >
+                          Reset to Default Card
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <div className="grid gap-2">
                     <label htmlFor="name" className="text-sm font-medium">Name</label>
                     <input 
