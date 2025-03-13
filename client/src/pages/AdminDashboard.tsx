@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, UserPlus, UserMinus, RefreshCcw, CheckCircle2, Download, Users } from "lucide-react";
+import { ArrowLeft, UserPlus, UserMinus, RefreshCcw, CheckCircle2, Download, Users, Upload, Camera } from "lucide-react";
 import { TeamMember, ApplicantFormData, getTeamMemberImageUrl } from "@/lib/teamMembers";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import Footer from "@/components/Footer";
@@ -40,6 +40,11 @@ interface Selfie {
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("team");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // State for file upload preview
+  const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   // Fetch team members
   const { data: teamMembers, isLoading: isTeamLoading } = useQuery<TeamMember[]>({
@@ -57,6 +62,25 @@ export default function AdminDashboard() {
     retry: false,
     refetchOnWindowFocus: false
   });
+  
+  // Handler for photo uploads
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setSelectedPhoto(file);
+    
+    // Create a preview URL for the selected image
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPhotoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+  
+  // State for tracking selected file preview
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
   
   // Mutation to approve an applicant to become a team member
   const approveMutation = useMutation({
@@ -118,6 +142,30 @@ export default function AdminDashboard() {
   // Mutation to update a team member
   const updateMemberMutation = useMutation({
     mutationFn: async (data: { id: number, updates: Partial<TeamMember> }) => {
+      if (selectedPhoto) {
+        // If there's a photo to upload, create a FormData object
+        const formData = new FormData();
+        formData.append('photo', selectedPhoto);
+        
+        // Add other member data
+        Object.entries(data.updates).forEach(([key, value]) => {
+          formData.append(key, value as string);
+        });
+        
+        // Make multipart form request
+        const response = await fetch(`/api/team-members/${data.id}`, {
+          method: 'PUT',
+          body: formData
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to update team member');
+        }
+        
+        return response;
+      }
+      
+      // No photo upload, just update member data
       return await apiRequest(
         "PUT",
         `/api/team-members/${data.id}`,
@@ -127,6 +175,8 @@ export default function AdminDashboard() {
     onSuccess: () => {
       // Reset editing state and invalidate cache
       setEditingMember(null);
+      setSelectedPhoto(null);
+      setPhotoPreview(null);
       queryClient.invalidateQueries({ queryKey: ["/api/team-members"] });
     }
   });
@@ -451,37 +501,74 @@ export default function AdminDashboard() {
                     <label className="text-sm font-medium">Current Photo</label>
                     <div className="flex flex-col items-center sm:flex-row sm:items-start gap-4">
                       <div className="w-32 h-32 overflow-hidden border rounded-md">
-                        <img
-                          src={getTeamMemberImage(editingMember)}
-                          alt={editingMember.name}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            e.currentTarget.src = "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
-                          }}
-                        />
+                        {photoPreview ? (
+                          // Show preview of newly selected photo
+                          <img
+                            src={photoPreview}
+                            alt="Photo preview"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          // Show existing photo
+                          <img
+                            src={getTeamMemberImage(editingMember)}
+                            alt={editingMember.name}
+                            className="w-full h-full object-cover"
+                            onError={(e) => {
+                              e.currentTarget.src = "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
+                            }}
+                          />
+                        )}
                       </div>
                       <div className="flex flex-col gap-2">
+                        {/* Option 1: Upload Image */}
+                        <div className="grid gap-2">
+                          <label htmlFor="photoUpload" className="text-sm font-medium">Upload Photo</label>
+                          <input
+                            type="file"
+                            id="photoUpload"
+                            accept="image/*"
+                            className="text-sm"
+                            onChange={handlePhotoChange}
+                          />
+                          <p className="text-xs text-gray-500">Upload a JPG, PNG, or GIF image</p>
+                        </div>
+                        
+                        {/* Separator */}
+                        <div className="flex items-center my-2">
+                          <div className="flex-grow h-px bg-gray-200"></div>
+                          <span className="px-2 text-xs text-gray-500">OR</span>
+                          <div className="flex-grow h-px bg-gray-200"></div>
+                        </div>
+                        
+                        {/* Option 2: Image URL */}
                         <div className="grid gap-2">
                           <label htmlFor="imageUrl" className="text-sm font-medium">Photo URL</label>
                           <input 
                             id="imageUrl" 
                             name="imageUrl" 
-                            className="p-2 border rounded-md w-full" 
+                            className="p-2 border rounded-md w-full text-sm" 
                             defaultValue={editingMember.imageUrl}
                             placeholder="Enter image URL or path"
                           />
                         </div>
+                        
+                        {/* Reset button */}
                         <Button 
                           type="button" 
                           variant="outline" 
                           size="sm"
                           className="text-xs mt-1"
                           onClick={() => {
-                            // Set image URL to Lemonistas card (reset to default)
+                            // Reset to default Lemonistas card
                             const imageUrlInput = document.getElementById('imageUrl') as HTMLInputElement;
                             if (imageUrlInput) {
                               imageUrlInput.value = "/attached_assets/Lemonistas card.png";
                             }
+                            
+                            // Clear any selected photo and preview
+                            setSelectedPhoto(null);
+                            setPhotoPreview(null);
                           }}
                         >
                           Reset to Default Card
