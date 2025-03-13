@@ -195,9 +195,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Selfie routes
   app.post("/api/selfies", async (req: Request, res: Response) => {
     try {
+      console.log("Received selfie upload request:", JSON.stringify({
+        ...req.body,
+        photoUrl: req.body.photoUrl ? req.body.photoUrl.substring(0, 50) + "..." : null
+      }));
+      
       const parsedBody = selfieFormSchema.safeParse(req.body);
       
       if (!parsedBody.success) {
+        console.error("Selfie validation error:", parsedBody.error.errors);
         return res.status(400).json({ 
           message: "Invalid selfie data", 
           errors: parsedBody.error.errors 
@@ -210,12 +216,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Team member not found" });
       }
       
+      // Set defaults for optional fields if not provided
       const selfieData = {
         ...parsedBody.data,
+        message: parsedBody.data.message || "",
+        location: parsedBody.data.location || "",
+        caption: parsedBody.data.caption || "",
         submittedAt: new Date()
       };
       
+      console.log("Creating new selfie record for team member:", teamMember.name);
       const newSelfie = await storage.createSelfie(selfieData);
+      
+      console.log("Selfie created successfully with ID:", newSelfie.id);
       res.status(201).json(newSelfie);
     } catch (error) {
       console.error("Selfie upload error:", error);

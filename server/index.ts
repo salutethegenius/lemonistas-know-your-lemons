@@ -4,8 +4,10 @@ import { setupVite, serveStatic, log } from "./vite";
 import { seedTeamMembers } from "./seed";
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+// Increase JSON body size limit to 50MB for image uploads
+app.use(express.json({ limit: '50mb' }));
+// Increase URL-encoded body size limit to 50MB
+app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
 app.use((req, res, next) => {
   const start = Date.now();
