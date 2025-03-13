@@ -7,6 +7,15 @@ export default function Hero({ onJoinClick }: HeroProps) {
     <header className="relative bg-[#4F2C4C]">
       <div className="container mx-auto px-4 py-12 md:py-20">
         <div className="flex flex-col items-center">
+          {/* Mammogram Access Program Logo */}
+          <div className="mb-8">
+            <img 
+              src="/attached_assets/Asset-4.webp" 
+              alt="Mammogram Access Program" 
+              className="h-20 md:h-24 w-auto"
+            />
+          </div>
+          
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold font-poppins text-white mb-4">
               Meet Our Lemonistas
