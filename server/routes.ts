@@ -5,6 +5,7 @@ import { applicantFormSchema, selfieFormSchema } from "@shared/schema";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import upload from './utils/upload';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -382,8 +383,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Update a team member
-  app.put("/api/team-members/:id", async (req: Request, res: Response) => {
+  // Update a team member - handle file uploads with multer
+  app.put("/api/team-members/:id", upload.single('photo'), async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -396,8 +397,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Team member not found" });
       }
       
-      // Update the team member with the request body
-      const updatedMember = await storage.updateTeamMember(id, req.body);
+      // Prepare update data from form fields
+      const updateData: any = { ...req.body };
+      
+      // If a file was uploaded, update the imageUrl
+      if (req.file) {
+        console.log('File uploaded:', req.file.filename);
+        // Store the relative path to the file
+        updateData.imageUrl = `/attached_assets/${req.file.filename}`;
+      }
+      
+      // Update the team member with the request data
+      const updatedMember = await storage.updateTeamMember(id, updateData);
       
       res.status(200).json({ 
         success: true, 
