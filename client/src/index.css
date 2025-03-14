@@ -11,3 +11,46 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+@layer components {
+  /* Animation for hover cards */
+  .animation-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Custom styling for hover cards */
+  .hover-card-content {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+                0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  /* Pulse animation for hover indicator */
+  .hover-indicator {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(251, 70, 148, 0.4);
+    }
+    70% {
+      box-shadow: 0 0 0 10px rgba(251, 70, 148, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(251, 70, 148, 0);
+    }
+  }
+}
