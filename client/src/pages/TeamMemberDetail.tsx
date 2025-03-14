@@ -16,17 +16,16 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip";
 
-// Fetch function for React Query
+// Use the centralized query client for API requests
+import { apiRequest } from "@/lib/queryClient";
+
+// Fetch functions for React Query - refactored to use the centralized apiRequest helper
 const fetchTeamMembers = async () => {
-  const response = await fetch("/api/team-members");
-  if (!response.ok) throw new Error("Failed to fetch team members");
-  return response.json();
+  return await apiRequest("GET", "/api/team-members");
 };
 
 const fetchTeamMember = async (id: number) => {
-  const response = await fetch(`/api/team-members/${id}`);
-  if (!response.ok) throw new Error("Failed to fetch team member");
-  return response.json();
+  return await apiRequest("GET", `/api/team-members/${id}`);
 };
 
 // Share profile component
@@ -88,8 +87,8 @@ export default function TeamMemberDetail() {
   const isLoading = isLoadingMembers || isLoadingMemberData;
   const error = membersError || memberError;
 
-  // Find the specific member by ID (either from the list or direct query)
-  const member = memberData || (allMembers?.find((m: TeamMember) => m.id === memberId));
+  // Find the specific member by ID (either from direct query or from the list)
+  const member = memberData || (Array.isArray(allMembers) ? allMembers.find((m: TeamMember) => m.id === memberId) : undefined);
 
   const handleOpenSelfieModal = () => setIsSelfieModalOpen(true);
   const handleCloseSelfieModal = () => setIsSelfieModalOpen(false);

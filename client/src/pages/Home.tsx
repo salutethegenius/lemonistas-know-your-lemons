@@ -15,8 +15,12 @@ export default function Home() {
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const teamSectionRef = useRef<HTMLDivElement>(null);
 
+  // Optimized query with caching and error handling
   const { data: teamMembers, isLoading } = useQuery<TeamMember[]>({
     queryKey: ["/api/team-members"],
+    staleTime: 5 * 60 * 1000, // 5 minutes cache before refetching
+    retry: 2,
+    refetchOnWindowFocus: false
   });
 
   const handleOpenJoinForm = () => {
