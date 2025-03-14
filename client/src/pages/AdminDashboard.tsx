@@ -68,6 +68,20 @@ export default function AdminDashboard() {
     const file = e.target.files?.[0];
     if (!file) return;
     
+    // Validate file type and size
+    if (!file.type.match('image.*')) {
+      alert('Please select an image file');
+      return;
+    }
+    
+    // Check file size (limit to 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File is too large. Maximum size is 5MB.');
+      return;
+    }
+    
+    console.log('Selected file:', file.name, file.type, `${(file.size / 1024 / 1024).toFixed(2)}MB`);
+    
     setSelectedPhoto(file);
     
     // Create a preview URL for the selected image
@@ -149,8 +163,12 @@ export default function AdminDashboard() {
         
         // Add other member data
         Object.entries(data.updates).forEach(([key, value]) => {
-          formData.append(key, value as string);
+          if (value !== undefined && value !== null) {
+            formData.append(key, value as string);
+          }
         });
+        
+        console.log('Uploading file:', selectedPhoto.name);
         
         // Make multipart form request
         const response = await fetch(`/api/team-members/${data.id}`, {
@@ -159,10 +177,14 @@ export default function AdminDashboard() {
         });
         
         if (!response.ok) {
+          console.error('Update failed:', await response.text());
           throw new Error('Failed to update team member');
         }
         
-        return response;
+        const result = await response.json();
+        console.log('Update successful:', result);
+        
+        return result;
       }
       
       // No photo upload, just update member data
@@ -172,12 +194,17 @@ export default function AdminDashboard() {
         data.updates
       );
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('Member updated successfully:', data);
       // Reset editing state and invalidate cache
       setEditingMember(null);
       setSelectedPhoto(null);
       setPhotoPreview(null);
       queryClient.invalidateQueries({ queryKey: ["/api/team-members"] });
+    },
+    onError: (error) => {
+      console.error('Update failed:', error);
+      alert('Failed to update team member. Please try again.');
     }
   });
   
@@ -484,11 +511,15 @@ export default function AdminDashboard() {
                   focus: formData.get('focus') as string,
                 };
                 
-                // Get the image URL from the form
-                const imageUrl = formData.get('imageUrl') as string;
-                if (imageUrl && imageUrl !== editingMember.imageUrl) {
-                  updates.imageUrl = imageUrl;
+                // If no file is selected, use the image URL from the form
+                if (!selectedPhoto) {
+                  const imageUrl = formData.get('imageUrl') as string;
+                  if (imageUrl && imageUrl !== editingMember.imageUrl) {
+                    updates.imageUrl = imageUrl;
+                  }
                 }
+                
+                console.log('Updating team member:', editingMember.id, 'with updates:', updates, 'and file:', selectedPhoto ? selectedPhoto.name : 'none');
                 
                 updateMemberMutation.mutate({
                   id: editingMember.id,
