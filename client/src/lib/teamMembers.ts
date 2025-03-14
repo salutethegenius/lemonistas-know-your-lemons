@@ -13,7 +13,7 @@ export interface TeamMember {
 export function getTeamMemberImageUrl(member: TeamMember | null | undefined): string {
   // Handle undefined member case
   if (!member) {
-    return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
+    return "/attached_assets/Lemonistas card.png";
   }
   
   // Original 4 members have direct name-based endpoints
@@ -42,8 +42,8 @@ export function getTeamMemberImageUrl(member: TeamMember | null | undefined): st
     return `/api/team-members/image/${member.id}`;
   }
   
-  // Fallback to placeholder
-  return "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
+  // Fallback to Lemonistas card
+  return "/attached_assets/Lemonistas card.png";
 }
 
 export interface ApplicantFormData {

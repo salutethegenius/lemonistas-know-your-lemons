@@ -38,7 +38,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                         onError={(e) => {
                           // Fallback if the image fails to load
-                          e.currentTarget.src = "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
+                          e.currentTarget.src = "/attached_assets/Lemonistas card.png";
                         }}
                       />
                     </div>
