@@ -16,16 +16,17 @@ import {
   TooltipTrigger
 } from "@/components/ui/tooltip";
 
-// Use the centralized query client for API requests
-import { apiRequest } from "@/lib/queryClient";
-
-// Fetch functions for React Query - refactored to use the centralized apiRequest helper
+// Fetch function for React Query
 const fetchTeamMembers = async () => {
-  return await apiRequest("GET", "/api/team-members");
+  const response = await fetch("/api/team-members");
+  if (!response.ok) throw new Error("Failed to fetch team members");
+  return response.json();
 };
 
 const fetchTeamMember = async (id: number) => {
-  return await apiRequest("GET", `/api/team-members/${id}`);
+  const response = await fetch(`/api/team-members/${id}`);
+  if (!response.ok) throw new Error("Failed to fetch team member");
+  return response.json();
 };
 
 // Share profile component
