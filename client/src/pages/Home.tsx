@@ -49,6 +49,16 @@ export default function Home() {
       <section className="py-16 px-4 bg-white">
         <div className="container mx-auto max-w-4xl text-center">
           <h2 className="text-3xl font-poppins font-bold mb-8">Our Global Impact</h2>
+          
+          {/* MAP Bahamas Image */}
+          <div className="mb-10">
+            <img
+              src="https://map-bahamas.com/wp-content/uploads/2024/11/03.png"
+              alt="MAP Bahamas"
+              className="mx-auto rounded-lg shadow-md max-w-full"
+            />
+          </div>
+          
           <p className="text-lg leading-relaxed mb-6">
             The Lemonistas are part of a powerful global movement—1,106 educators across 71 countries, 
             reaching communities in 40 languages. Through the Know Your Lemons Foundation's partnership 
