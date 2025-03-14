@@ -218,7 +218,7 @@ export default function TeamMemberDetail() {
                       alt={member.name} 
                       className="w-full h-auto object-cover aspect-square"
                       onError={(e) => {
-                        e.currentTarget.src = "https://placehold.co/400x400/f8f6f4/FB4694?text=L&font=poppins";
+                        e.currentTarget.src = "/attached_assets/Lemonistas card.png";
                       }}
                     />
                   </div>
