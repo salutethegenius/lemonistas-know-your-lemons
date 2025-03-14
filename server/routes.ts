@@ -104,9 +104,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (nameLower.includes('portia')) {
         console.log(`Serving Portia's image for team member ID: ${id}`);
         return sendTeamMemberImage(path.join(__dirname, "../assets/Portia Ebraim.jpg"), res);
-      } else if (nameLower.includes('sam')) {
+      } else if (nameLower.includes('sam') || nameLower.includes('samantha')) {
         console.log(`Serving Sam's image for team member ID: ${id}`);
         return sendTeamMemberImage(path.join(__dirname, "../assets/Sam (1).jpg"), res);
+      } else if (nameLower.includes('karina') || nameLower.includes('delghir')) {
+        console.log(`Serving Karina's image for team member ID: ${id}`);
+        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Karina.jpg"), res);
+      } else if (nameLower.includes('therrel')) {
+        console.log(`Serving Therrel's image for team member ID: ${id}`);
+        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Delghir.jpg"), res);
+      } else if (nameLower.includes('nikeia')) {
+        console.log(`Serving Nikeia's image for team member ID: ${id}`);
+        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/nikeia.jpeg"), res);
       }
       
       // If the imageUrl is an absolute URL, redirect to it
