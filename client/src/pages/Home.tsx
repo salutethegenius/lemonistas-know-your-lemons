@@ -46,18 +46,18 @@ export default function Home() {
       <Hero onJoinClick={scrollToTeamSection} />
       
       {/* Mission section */}
-      <section className="py-16 px-4 bg-white">
-        <div className="container mx-auto max-w-4xl text-center">
+      <section className="py-16 px-4 bg-white relative">
+        {/* MAP Bahamas Image as Watermark */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none overflow-hidden">
+          <img
+            src="https://map-bahamas.com/wp-content/uploads/2024/11/03.png"
+            alt="MAP Bahamas Watermark"
+            className="w-full"
+          />
+        </div>
+        
+        <div className="container mx-auto max-w-4xl text-center relative z-10">
           <h2 className="text-3xl font-poppins font-bold mb-8">Our Global Impact</h2>
-          
-          {/* MAP Bahamas Image */}
-          <div className="mb-10">
-            <img
-              src="https://map-bahamas.com/wp-content/uploads/2024/11/03.png"
-              alt="MAP Bahamas"
-              className="mx-auto rounded-lg shadow-md max-w-full"
-            />
-          </div>
           
           <p className="text-lg leading-relaxed mb-6">
             The Lemonistas are part of a powerful global movement—1,106 educators across 71 countries, 
