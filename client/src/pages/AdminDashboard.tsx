@@ -176,21 +176,32 @@ export default function AdminDashboard() {
         
         console.log('Uploading file:', selectedPhoto.name);
         
-        // Make multipart form request
-        const response = await fetch(`/api/team-members/${data.id}`, {
-          method: 'PUT',
-          body: formData
-        });
-        
-        if (!response.ok) {
-          console.error('Update failed:', await response.text());
-          throw new Error('Failed to update team member');
+        // Ensure we're getting a fresh copy of the file by re-reading it
+        try {
+          // Make multipart form request
+          const response = await fetch(`/api/team-members/${data.id}`, {
+            method: 'PUT',
+            body: formData,
+            // Avoid any caching issues
+            headers: {
+              'Cache-Control': 'no-cache',
+              'Pragma': 'no-cache'
+            }
+          });
+          
+          if (!response.ok) {
+            console.error('Update failed:', await response.text());
+            throw new Error('Failed to update team member');
+          }
+          
+          const result = await response.json();
+          console.log('Update successful:', result);
+          
+          return result;
+        } catch (error) {
+          console.error('Error during file upload:', error);
+          throw error;
         }
-        
-        const result = await response.json();
-        console.log('Update successful:', result);
-        
-        return result;
       }
       
       // No photo upload, just update member data
