@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TeamMember, getTeamMemberImageUrl } from "@/lib/teamMembers";
 import Footer from "@/components/Footer";
 import { useState } from "react";
-import SelfieUploadModal from "@/components/SelfieUploadModal";
+import ConversationLogModal from "@/components/ConversationLogModal";
 import SuccessModal from "@/components/SuccessModal";
 import { 
   Tooltip,
@@ -240,10 +240,10 @@ export default function TeamMemberDetail() {
                     </div>
                   </div>
 
-                  {/* Upload Selfie Button */}
+                  {/* Log Conversation Button */}
                   <div className="mt-6">
                     <Button 
-                      onClick={handleOpenSelfieModal} 
+                      onClick={handleOpenConversationModal} 
                       className="w-full flex items-center justify-center space-x-2 bg-[#FB4694] hover:bg-[#FB4694]/90 text-white py-3 rounded-xl"
                     >
                       <Camera className="h-5 w-5 mr-2" />
@@ -267,19 +267,19 @@ export default function TeamMemberDetail() {
       </div>
       <Footer />
 
-      {/* Selfie Upload Modal */}
-      {isSelfieModalOpen && member && member.id && member.name && (
-        <SelfieUploadModal 
-          onClose={handleCloseSelfieModal} 
-          onSuccess={handleSelfieSuccess}
+      {/* Conversation Log Modal */}
+      {isConversationModalOpen && member && member.id && member.name && (
+        <ConversationLogModal 
+          onClose={handleCloseConversationModal} 
+          onSuccess={handleConversationSuccess}
           teamMemberId={member.id}
           teamMemberName={member.name}
         />
       )}
 
       {/* Success Modal */}
-      {isSelfieSuccessModalOpen && (
-        <SuccessModal onClose={handleCloseSelfieSuccessModal} />
+      {isConversationSuccessModalOpen && (
+        <SuccessModal onClose={handleCloseConversationSuccessModal} />
       )}
     </div>
   );
