@@ -37,8 +37,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
                       <img 
                         src={getTeamMemberImage(member)}
                         alt={`${member.name}, ${member.role}`} 
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        style={{ objectPosition: 'center' }}
+                        className="transition-transform duration-300 group-hover:scale-105 img-centered"
                         loading={index < 4 ? "eager" : "lazy"} 
                         decoding="async"
                         width="400" 
