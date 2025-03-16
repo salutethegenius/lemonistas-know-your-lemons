@@ -66,16 +66,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // This is important for handling new members approved from applications
   app.get("/api/team-members/image/:id", async (req: Request, res: Response) => {
     try {
-      // Use no-cache for team member images to ensure updates are always shown
-      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-      res.set('Pragma', 'no-cache');
-      res.set('Expires', '0');
+      // Use caching for improved performance (30 days for better performance)
+      // Only disable cache for specific team members that need frequent updates
+      const teamMembersWithoutCache = [10]; // Monisha's ID is 10 based on logs
       
       // Handle undefined or invalid IDs
       if (!req.params.id || req.params.id === 'undefined') {
         // Send a default image instead of an error
         const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
         if (fs.existsSync(defaultImagePath)) {
+          res.set('Cache-Control', 'public, max-age=2592000'); // 30 days
           return res.sendFile(defaultImagePath);
         }
         return res.status(400).json({ message: "Invalid team member ID" });
@@ -86,18 +86,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid team member ID" });
       }
       
-      // Enhanced logging for debugging
-      console.log(`Getting image for team member ID: ${id}`);
-      
       const teamMember = await storage.getTeamMember(id);
       if (!teamMember) {
-        console.log(`Team member not found with ID: ${id}`);
         // Return default image with cache headers instead of 404
         const defaultImagePath = path.join(__dirname, "../attached_assets/Lemonistas card.png");
         if (fs.existsSync(defaultImagePath)) {
+          res.set('Cache-Control', 'public, max-age=2592000'); // 30 days
           return res.sendFile(defaultImagePath);
         }
         return res.status(404).json({ message: "Team member not found" });
+      }
+      
+      // Apply appropriate cache headers based on team member ID
+      if (teamMembersWithoutCache.includes(id)) {
+        // No cache for team members who need frequent updates
+        res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.set('Pragma', 'no-cache');
+        res.set('Expires', '0');
+      } else {
+        // Cache for 7 days for better performance
+        res.set('Cache-Control', 'public, max-age=604800'); 
       }
       
       console.log(`Team member found. Name: ${teamMember.name}, ImageUrl: ${teamMember.imageUrl}`);

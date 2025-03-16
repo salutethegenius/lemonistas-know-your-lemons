@@ -29,7 +29,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
             ))
           ) : (
             // Team member cards with hover effect
-            teamMembers.map((member) => (
+            teamMembers.map((member, index) => (
               <div key={member.id} className="block">
                 <div>
                   <Link href={`/team-member/${member.id}`}>
@@ -39,6 +39,9 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
                           src={getTeamMemberImage(member)}
                           alt={member.name} 
                           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy" 
+                          decoding="async"
+                          fetchPriority={index < 4 ? "high" : "low"}
                           onError={(e) => {
                             // Fallback if the image fails to load
                             e.currentTarget.src = "/attached_assets/Lemonistas card.png";
