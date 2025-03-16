@@ -55,14 +55,14 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
     onSuccess: () => {
       toast({
         title: "Success!",
-        description: "Your selfie has been uploaded. Thank you for sharing!",
+        description: "Conversation has been logged successfully. Thank you!",
       });
       onSuccess();
     },
     onError: (error) => {
       toast({
         title: "Error",
-        description: "There was an error uploading your selfie. Please try again.",
+        description: "There was an error logging your conversation. Please try again.",
         variant: "destructive",
       });
       console.error("Upload error:", error);
@@ -85,14 +85,7 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
   };
 
   const onSubmit = (data: SelfieFormData) => {
-    if (!photoPreview) {
-      toast({
-        title: "Missing photo",
-        description: "Please upload a selfie before submitting",
-        variant: "destructive",
-      });
-      return;
-    }
+    // Photo is now optional, so we remove the validation check
     mutation.mutate(data);
   };
 
@@ -111,7 +104,7 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
             <div className="flex justify-center mb-6">
               {photoPreview ? (
                 <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-[#FB4694]">
-                  <img src={photoPreview} alt="Selfie preview" className="w-full h-full object-cover" />
+                  <img src={photoPreview} alt="Photo preview" className="w-full h-full object-cover" />
                   <Button
                     type="button"
                     variant="destructive"

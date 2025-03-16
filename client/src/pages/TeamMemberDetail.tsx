@@ -59,8 +59,8 @@ const ShareButton = ({ platform, onClick, children }: ShareButtonProps) => (
 export default function TeamMemberDetail() {
   const [match, params] = useRoute("/team-member/:id");
   const memberId = params?.id ? parseInt(params.id) : null;
-  const [isSelfieModalOpen, setIsSelfieModalOpen] = useState(false);
-  const [isSelfieSuccessModalOpen, setIsSelfieSuccessModalOpen] = useState(false);
+  const [isConversationModalOpen, setIsConversationModalOpen] = useState(false);
+  const [isConversationSuccessModalOpen, setIsConversationSuccessModalOpen] = useState(false);
 
   // Fetch all team members
   const { 
@@ -91,13 +91,13 @@ export default function TeamMemberDetail() {
   // Find the specific member by ID (either from direct query or from the list)
   const member = memberData || (Array.isArray(allMembers) ? allMembers.find((m: TeamMember) => m.id === memberId) : undefined);
 
-  const handleOpenSelfieModal = () => setIsSelfieModalOpen(true);
-  const handleCloseSelfieModal = () => setIsSelfieModalOpen(false);
-  const handleSelfieSuccess = () => {
-    setIsSelfieModalOpen(false);
-    setIsSelfieSuccessModalOpen(true);
+  const handleOpenConversationModal = () => setIsConversationModalOpen(true);
+  const handleCloseConversationModal = () => setIsConversationModalOpen(false);
+  const handleConversationSuccess = () => {
+    setIsConversationModalOpen(false);
+    setIsConversationSuccessModalOpen(true);
   };
-  const handleCloseSelfieSuccessModal = () => setIsSelfieSuccessModalOpen(false);
+  const handleCloseConversationSuccessModal = () => setIsConversationSuccessModalOpen(false);
 
   // Function to handle sharing
   const shareProfile = (platform: string) => {
