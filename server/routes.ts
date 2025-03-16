@@ -23,9 +23,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Team member image routes - must be before /:id route to avoid conflict
   // Use a helper function to handle image requests for known team members
-  const sendTeamMemberImage = (imagePath: string, res: Response) => {
-    // Cache the image response for faster loading (5 minutes cache)
-    res.set('Cache-Control', 'public, max-age=300');
+  const sendTeamMemberImage = (imagePath: string, res: Response, noCache: boolean = false) => {
+    if (noCache) {
+      // No caching for special images like Monisha's that get updated frequently
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    } else {
+      // Cache other images for faster loading (5 minutes cache)
+      res.set('Cache-Control', 'public, max-age=300');
+    }
     
     // Handle missing file
     if (!fs.existsSync(imagePath)) {
@@ -116,6 +123,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (nameLower.includes('nikeia')) {
         console.log(`Serving Nikeia's image for team member ID: ${id}`);
         return sendTeamMemberImage(path.join(__dirname, "../client/src/images/nikeia.jpeg"), res);
+      } else if (nameLower.includes('monisha')) {
+        console.log(`Serving Monisha's image for team member ID: ${id}`);
+        
+        // Try to get the most recent uploaded image from attached_assets
+        // First check the database for the image URL
+        if (teamMember.imageUrl && teamMember.imageUrl.includes('attached_assets')) {
+          const monishaImagePath = path.join(__dirname, '..', teamMember.imageUrl);
+          console.log(`Trying to serve Monisha's image from DB path: ${monishaImagePath}`);
+          
+          if (fs.existsSync(monishaImagePath)) {
+            return sendTeamMemberImage(monishaImagePath, res, true); // true = no cache
+          }
+        }
+        
+        // Fallback to the latest known upload
+        const possibleImagePath = `/attached_assets/team-member-1742146750574-55066934.png`;
+        const backupImagePath = path.join(__dirname, '..', possibleImagePath);
+        if (fs.existsSync(backupImagePath)) {
+          console.log(`Falling back to known Monisha image: ${backupImagePath}`);
+          return sendTeamMemberImage(backupImagePath, res, true); // true = no cache
+        }
       }
       
       // If the imageUrl is an absolute URL, redirect to it
@@ -128,7 +156,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const possibleLocalFile = path.join(__dirname, "..", teamMember.imageUrl);
         if (fs.existsSync(possibleLocalFile)) {
           console.log(`Found local file at: ${possibleLocalFile}`);
-          return res.sendFile(possibleLocalFile);
+          
+          // If this is an uploaded file, disable caching
+          const shouldDisableCache = teamMember.imageUrl.includes('attached_assets') && 
+                                    teamMember.imageUrl.includes('team-member-');
+          
+          if (shouldDisableCache) {
+            console.log('Serving uploaded file with no-cache headers');
+            return sendTeamMemberImage(possibleLocalFile, res, true); // No cache
+          } else {
+            return res.sendFile(possibleLocalFile);
+          }
         }
         
         // If it's not a local file but still has a path, try to redirect
