@@ -157,10 +157,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (nameLower.includes('sam') || nameLower.includes('samantha')) {
         console.log(`Serving Sam's image for team member ID: ${id}`);
         return sendTeamMemberImage(path.join(__dirname, "../assets/Sam (1).jpg"), res, false, req);
-      } else if (nameLower.includes('karina') || nameLower.includes('delghir')) {
+      } else if (nameLower.includes('karina')) {
         console.log(`Serving Karina's image for team member ID: ${id}`);
         return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Karina.jpg"), res, false, req);
-      } else if (nameLower.includes('therrel')) {
+      } else if (nameLower === 'therrel') {
         console.log(`Serving Therrel's image for team member ID: ${id}`);
         return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Delghir.jpg"), res, false, req);
       } else if (nameLower.includes('nikeia')) {

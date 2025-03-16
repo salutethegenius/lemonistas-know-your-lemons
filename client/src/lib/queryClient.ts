@@ -110,7 +110,7 @@ export const getQueryFn: <T>(options: QueryFnOptions) => QueryFunction<T> =
     // For image requests, return blob URL
     if (isImageRequest) {
       const blob = await res.blob();
-      return URL.createObjectURL(blob) as unknown as T;
+      return URL.createObjectURL(blob) as any;
     }
     
     // For other requests, parse as JSON
