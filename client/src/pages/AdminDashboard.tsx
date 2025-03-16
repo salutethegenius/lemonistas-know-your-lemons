@@ -272,12 +272,25 @@ export default function AdminDashboard() {
     <div className="min-h-screen flex flex-col bg-[#F8F6F4]">
       <div className="container mx-auto px-4 py-12 flex-grow">
         <div className="flex justify-between items-center mb-8">
-          <Link href="/">
-            <Button variant="outline" className="mb-4 md:mb-0">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Website
+          <div className="flex items-center gap-3">
+            <Link href="/">
+              <Button variant="outline" className="mb-4 md:mb-0">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Website
+              </Button>
+            </Link>
+            <Button 
+              variant="outline" 
+              className="mb-4 md:mb-0 bg-red-50 text-red-600 border-red-200 hover:bg-red-100"
+              onClick={async () => {
+                await logout();
+                navigate("/login");
+              }}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
             </Button>
-          </Link>
+          </div>
           <h1 className="text-3xl font-poppins font-bold">Admin Dashboard</h1>
         </div>
 
