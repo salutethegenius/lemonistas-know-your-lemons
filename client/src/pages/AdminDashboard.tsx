@@ -31,10 +31,14 @@ interface Applicant {
 
 interface Selfie {
   id: number;
+  name: string;
+  email: string;
+  phone: string;
+  time: string;
   location: string;
-  caption: string;
+  notes?: string;
   teamMemberId: number;
-  createdAt: string;
+  submittedAt: string;
   photoUrl: string | null;
 }
 
@@ -505,10 +509,8 @@ export default function AdminDashboard() {
                 const formData = new FormData(e.currentTarget);
                 const updates: Partial<TeamMember> = {
                   name: formData.get('name') as string,
-                  role: formData.get('role') as string,
                   location: formData.get('location') as string,
-                  bio: formData.get('bio') as string,
-                  focus: formData.get('focus') as string,
+                  // Only these two fields are needed as per requirements
                 };
                 
                 // If no file is selected, use the image URL from the form
@@ -620,45 +622,12 @@ export default function AdminDashboard() {
                   </div>
                   
                   <div className="grid gap-2">
-                    <label htmlFor="role" className="text-sm font-medium">Role</label>
-                    <input 
-                      id="role" 
-                      name="role" 
-                      className="p-2 border rounded-md" 
-                      defaultValue={editingMember.role}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="grid gap-2">
                     <label htmlFor="location" className="text-sm font-medium">Location</label>
                     <input 
                       id="location" 
                       name="location" 
                       className="p-2 border rounded-md" 
                       defaultValue={editingMember.location}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="grid gap-2">
-                    <label htmlFor="focus" className="text-sm font-medium">Focus Areas</label>
-                    <input 
-                      id="focus" 
-                      name="focus" 
-                      className="p-2 border rounded-md" 
-                      defaultValue={editingMember.focus}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="grid gap-2">
-                    <label htmlFor="bio" className="text-sm font-medium">Biography</label>
-                    <textarea 
-                      id="bio" 
-                      name="bio" 
-                      className="p-2 border rounded-md min-h-[100px]" 
-                      defaultValue={editingMember.bio}
                       required
                     />
                   </div>
