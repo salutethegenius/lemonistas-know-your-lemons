@@ -33,6 +33,8 @@ export interface IStorage {
   createSelfie(selfie: InsertSelfie): Promise<Selfie>;
   getAllSelfies(): Promise<Selfie[]>;
   getSelfiesByTeamMemberId(teamMemberId: number): Promise<Selfie[]>;
+  deleteSelfie(id: number): Promise<void>;
+  getSelfie(id: number): Promise<Selfie | undefined>;
 }
 
 // Database implementation
@@ -141,6 +143,17 @@ export class DatabaseStorage implements IStorage {
   
   async getSelfiesByTeamMemberId(teamMemberId: number): Promise<Selfie[]> {
     return db.select().from(selfies).where(eq(selfies.teamMemberId, teamMemberId));
+  }
+  
+  async getSelfie(id: number): Promise<Selfie | undefined> {
+    const [selfie] = await db.select().from(selfies).where(eq(selfies.id, id));
+    return selfie || undefined;
+  }
+  
+  async deleteSelfie(id: number): Promise<void> {
+    await db
+      .delete(selfies)
+      .where(eq(selfies.id, id));
   }
 }
 

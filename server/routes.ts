@@ -434,6 +434,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Delete a selfie (conversation)
+  app.delete("/api/selfies/:id", async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid selfie ID" });
+      }
+      
+      // Get the selfie to verify it exists
+      const selfie = await storage.getSelfie(id);
+      if (!selfie) {
+        return res.status(404).json({ message: "Selfie not found" });
+      }
+      
+      // Delete the selfie
+      await storage.deleteSelfie(id);
+      
+      res.status(200).json({ 
+        success: true, 
+        message: "Conversation log deleted successfully"
+      });
+    } catch (error) {
+      console.error("Error deleting selfie:", error);
+      res.status(500).json({ message: "Error deleting conversation log" });
+    }
+  });
+  
   // Update a team member - handle file uploads with multer
   app.put("/api/team-members/:id", upload.single('photo'), async (req: Request, res: Response) => {
     try {
