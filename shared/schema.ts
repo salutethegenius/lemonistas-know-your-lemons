@@ -68,9 +68,12 @@ export const selfies = pgTable("selfies", {
   name: text("name").notNull(),
   email: text("email").notNull(),
   phone: text("phone").notNull(),
-  time: text("time").notNull(),
+  // Replacing 'time' with 'message' as per database structure
+  message: text("message"),
   location: text("location").notNull(),
-  notes: text("notes"),
+  // Adding 'caption' as it exists in the database
+  caption: text("caption"),
+  // 'notes' was replaced with 'message' and 'caption' in the database
   photoUrl: text("photo_url"),
   submittedAt: text("submitted_at").notNull(),
 });

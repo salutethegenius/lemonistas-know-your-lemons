@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { ArrowLeft, UserPlus, UserMinus, RefreshCcw, CheckCircle2, Download, Users, Upload, Camera } from "lucide-react";
 import { TeamMember, ApplicantFormData, getTeamMemberImageUrl } from "@/lib/teamMembers";
 import { queryClient, apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 import Footer from "@/components/Footer";
 
 // Function to get the appropriate image URL for a team member
@@ -45,6 +46,7 @@ interface Selfie {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("team");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
   
   // State for file upload preview
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);

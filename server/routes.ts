@@ -229,7 +229,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Set defaults for optional fields if not provided
       const selfieData = {
         ...parsedBody.data,
-        notes: parsedBody.data.notes || "",
+        message: parsedBody.data.notes || "",
         photoUrl: parsedBody.data.photoUrl || "",
         submittedAt: new Date()
       };
