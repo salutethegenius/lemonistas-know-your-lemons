@@ -22,44 +22,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Team member image routes - must be before /:id route to avoid conflict
-  // Use a helper function to handle image requests for known team members
-  const sendTeamMemberImage = (imagePath: string, res: Response, noCache: boolean = false) => {
+  // Use a helper function to handle image requests for known team members with performance optimization
+  const sendTeamMemberImage = (imagePath: string, res: Response, noCache: boolean = false, req?: Request) => {
+    // Add ETag support for better caching
+    const stat = fs.existsSync(imagePath) ? fs.statSync(imagePath) : null;
+    const etag = stat ? `W/"${stat.size}-${Date.parse(stat.mtime.toString())}"` : null;
+    
+    // Set proper content type based on file extension
+    const ext = path.extname(imagePath).toLowerCase();
+    const contentTypeMap: {[key: string]: string} = {
+      '.jpg': 'image/jpeg',
+      '.jpeg': 'image/jpeg',
+      '.png': 'image/png',
+      '.svg': 'image/svg+xml',
+      '.webp': 'image/webp'
+    };
+    
+    if (etag && req) {
+      res.setHeader('ETag', etag);
+      
+      // Check if browser sent If-None-Match header matching our ETag
+      const ifNoneMatch = req.headers['if-none-match'];
+      if (ifNoneMatch === etag) {
+        // Return 304 Not Modified if ETag matches
+        return res.status(304).end();
+      }
+    }
+    
     if (noCache) {
       // No caching for special images like Monisha's that get updated frequently
       res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
       res.setHeader('Pragma', 'no-cache');
       res.setHeader('Expires', '0');
     } else {
-      // Cache other images for faster loading (5 minutes cache)
-      res.set('Cache-Control', 'public, max-age=300');
+      // Cache other images for faster loading (1 day cache, was 5 minutes)
+      res.set('Cache-Control', 'public, max-age=86400');
+    }
+    
+    // Set proper content type for better browser rendering
+    if (ext && contentTypeMap[ext]) {
+      res.setHeader('Content-Type', contentTypeMap[ext]);
     }
     
     // Handle missing file
     if (!fs.existsSync(imagePath)) {
       const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
       if (fs.existsSync(defaultImagePath)) {
+        // Set proper content type for SVG
+        res.setHeader('Content-Type', 'image/svg+xml');
         return res.sendFile(defaultImagePath);
       }
       return res.status(404).send("Image not found");
     }
+    
     res.sendFile(imagePath);
   };
   
   // Define original team member image routes with caching
   app.get("/api/team-members/gwen", (req: Request, res: Response) => {
-    sendTeamMemberImage(path.join(__dirname, "../assets/Gwen.jpg"), res);
+    sendTeamMemberImage(path.join(__dirname, "../assets/Gwen.jpg"), res, false, req);
   });
   
   app.get("/api/team-members/ivalee", (req: Request, res: Response) => {
-    sendTeamMemberImage(path.join(__dirname, "../assets/Ivalee.jpg"), res);
+    sendTeamMemberImage(path.join(__dirname, "../assets/Ivalee.jpg"), res, false, req);
   });
   
   app.get("/api/team-members/portia", (req: Request, res: Response) => {
-    sendTeamMemberImage(path.join(__dirname, "../assets/Portia Ebraim.jpg"), res);
+    sendTeamMemberImage(path.join(__dirname, "../assets/Portia Ebraim.jpg"), res, false, req);
   });
   
   app.get("/api/team-members/sam", (req: Request, res: Response) => {
-    sendTeamMemberImage(path.join(__dirname, "../assets/Sam (1).jpg"), res);
+    sendTeamMemberImage(path.join(__dirname, "../assets/Sam (1).jpg"), res, false, req);
   });
   
   // Generic route to handle any team member images by ID
@@ -114,25 +147,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const nameLower = teamMember.name.toLowerCase().trim();
       if (nameLower.includes('gwen')) {
         console.log(`Serving Gwen's image for team member ID: ${id}`);
-        return sendTeamMemberImage(path.join(__dirname, "../assets/Gwen.jpg"), res);
+        return sendTeamMemberImage(path.join(__dirname, "../assets/Gwen.jpg"), res, false, req);
       } else if (nameLower.includes('ivalee')) {
         console.log(`Serving Ivalee's image for team member ID: ${id}`);
-        return sendTeamMemberImage(path.join(__dirname, "../assets/Ivalee.jpg"), res);
+        return sendTeamMemberImage(path.join(__dirname, "../assets/Ivalee.jpg"), res, false, req);
       } else if (nameLower.includes('portia')) {
         console.log(`Serving Portia's image for team member ID: ${id}`);
-        return sendTeamMemberImage(path.join(__dirname, "../assets/Portia Ebraim.jpg"), res);
+        return sendTeamMemberImage(path.join(__dirname, "../assets/Portia Ebraim.jpg"), res, false, req);
       } else if (nameLower.includes('sam') || nameLower.includes('samantha')) {
         console.log(`Serving Sam's image for team member ID: ${id}`);
-        return sendTeamMemberImage(path.join(__dirname, "../assets/Sam (1).jpg"), res);
+        return sendTeamMemberImage(path.join(__dirname, "../assets/Sam (1).jpg"), res, false, req);
       } else if (nameLower.includes('karina') || nameLower.includes('delghir')) {
         console.log(`Serving Karina's image for team member ID: ${id}`);
-        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Karina.jpg"), res);
+        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Karina.jpg"), res, false, req);
       } else if (nameLower.includes('therrel')) {
         console.log(`Serving Therrel's image for team member ID: ${id}`);
-        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Delghir.jpg"), res);
+        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Delghir.jpg"), res, false, req);
       } else if (nameLower.includes('nikeia')) {
         console.log(`Serving Nikeia's image for team member ID: ${id}`);
-        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/nikeia.jpeg"), res);
+        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/nikeia.jpeg"), res, false, req);
       } else if (nameLower.includes('monisha')) {
         console.log(`Serving Monisha's image for team member ID: ${id}`);
         
@@ -143,7 +176,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.log(`Trying to serve Monisha's image from DB path: ${monishaImagePath}`);
           
           if (fs.existsSync(monishaImagePath)) {
-            return sendTeamMemberImage(monishaImagePath, res, true); // true = no cache
+            return sendTeamMemberImage(monishaImagePath, res, true, req); // true = no cache
           }
         }
         
@@ -152,7 +185,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const backupImagePath = path.join(__dirname, '..', possibleImagePath);
         if (fs.existsSync(backupImagePath)) {
           console.log(`Falling back to known Monisha image: ${backupImagePath}`);
-          return sendTeamMemberImage(backupImagePath, res, true); // true = no cache
+          return sendTeamMemberImage(backupImagePath, res, true, req); // true = no cache
         }
       }
       
