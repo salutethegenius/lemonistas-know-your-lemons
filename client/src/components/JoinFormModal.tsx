@@ -42,6 +42,16 @@ export default function JoinFormModal({ onClose, onSuccess }: JoinFormModalProps
       return response.json();
     },
     onSuccess: () => {
+      toast({
+        title: "Application Submitted",
+        description: "Thank you for applying! We'll be in touch soon.",
+        variant: "default",
+      });
+      
+      // Invalidate the applicants query to refresh the admin dashboard
+      queryClient.invalidateQueries({ queryKey: ["/api/applicants"] });
+      
+      // Close the form and show success
       onSuccess();
     },
     onError: (error) => {
