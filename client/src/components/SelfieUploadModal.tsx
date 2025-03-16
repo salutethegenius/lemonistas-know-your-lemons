@@ -104,7 +104,12 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
             <div className="flex justify-center mb-6">
               {photoPreview ? (
                 <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-[#FB4694]">
-                  <img src={photoPreview} alt="Photo preview" className="w-full h-full object-cover" />
+                  <img 
+                    src={photoPreview} 
+                    alt="Photo preview" 
+                    className="w-full h-full object-cover" 
+                    style={{ objectPosition: 'center' }}
+                  />
                   <Button
                     type="button"
                     variant="destructive"

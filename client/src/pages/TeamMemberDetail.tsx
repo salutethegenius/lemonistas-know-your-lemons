@@ -202,7 +202,8 @@ export default function TeamMemberDetail() {
                     <img 
                       src={getTeamMemberImageUrl(member)}
                       alt={member.name} 
-                      className="w-full h-auto object-cover aspect-[3/4]"
+                      className="w-full h-full object-cover aspect-[3/4]"
+                      style={{ objectPosition: 'center', minHeight: '300px' }}
                       onError={(e) => {
                         e.currentTarget.src = "/attached_assets/Lemonistas card.png";
                       }}
