@@ -1,15 +1,16 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { ArrowLeft, UserPlus, UserMinus, RefreshCcw, CheckCircle2, Download, Users, Upload, Camera } from "lucide-react";
+import { ArrowLeft, UserPlus, UserMinus, RefreshCcw, CheckCircle2, Download, Users, Upload, Camera, LogOut } from "lucide-react";
 import { TeamMember, ApplicantFormData, getTeamMemberImageUrl } from "@/lib/teamMembers";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/AuthContext";
 import Footer from "@/components/Footer";
 
 // Function to get the appropriate image URL for a team member
@@ -46,7 +47,16 @@ interface Selfie {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("team");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { isAuthenticated, isLoading: authLoading, logout } = useAuth();
+  
+  // Check if user is authenticated, redirect to login if not
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, authLoading, navigate]);
   
   // State for file upload preview
   const [selectedPhoto, setSelectedPhoto] = useState<File | null>(null);

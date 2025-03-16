@@ -1,10 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { apiRequest } from "@/lib/queryClient";
-import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, LogIn, Loader2 } from "lucide-react";
 import { Link } from "wouter";
+import { useAuth } from "@/context/AuthContext";
 
 // Define form schema
 const loginSchema = z.object({
@@ -24,6 +23,15 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export default function Login() {
   const [, navigate] = useLocation();
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login, isAuthenticated } = useAuth();
+  
+  // If already authenticated, redirect to admin dashboard
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/admin");
+    }
+  }, [isAuthenticated, navigate]);
   
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -33,22 +41,24 @@ export default function Login() {
     },
   });
 
-  const loginMutation = useMutation({
-    mutationFn: async (data: LoginFormData) => {
-      const response = await apiRequest("POST", "/api/auth/login", data);
-      return response;
-    },
-    onSuccess: () => {
-      navigate("/admin");
-    },
-    onError: (err: any) => {
-      setError(err.message || "Invalid username or password");
-    },
-  });
-
-  const onSubmit = (data: LoginFormData) => {
+  const onSubmit = async (data: LoginFormData) => {
     setError(null);
-    loginMutation.mutate(data);
+    setIsSubmitting(true);
+    
+    try {
+      const success = await login(data.username, data.password);
+      
+      if (success) {
+        navigate("/admin");
+      } else {
+        setError("Invalid username or password");
+      }
+    } catch (err) {
+      setError("An error occurred during login. Please try again.");
+      console.error("Login error:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -105,9 +115,9 @@ export default function Login() {
               <Button 
                 type="submit" 
                 className="w-full bg-[#FB4694] hover:bg-[#e03a84]"
-                disabled={loginMutation.isPending}
+                disabled={isSubmitting}
               >
-                {loginMutation.isPending ? (
+                {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Please wait

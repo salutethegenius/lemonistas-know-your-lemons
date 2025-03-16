@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { apiRequest } from '@/lib/queryClient';
+import { queryClient } from '@/lib/queryClient';
 
 interface AuthContextType {
   user: { username: string } | null;
@@ -40,13 +40,31 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
+  // Helper function to make API requests
+  const fetchApi = async <T,>(url: string, options?: RequestInit): Promise<T> => {
+    const response = await fetch(url, {
+      ...options,
+      credentials: 'include',
+      headers: {
+        'Accept': 'application/json',
+        ...(options?.headers || {}),
+      }
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+    
+    return response.json();
+  };
+
   // Check if user is already authenticated
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const response = await apiRequest<AuthResponse>('/api/auth/status');
+        const response = await fetchApi<AuthResponse>('/api/auth/status');
         
-        if (response && response.authenticated && response.user) {
+        if (response.authenticated && response.user) {
           setUser(response.user);
         } else {
           setUser(null);
@@ -65,27 +83,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
       setIsLoading(true);
-      const response = await apiRequest<LoginResponse>('/api/auth/login', {
+      const response = await fetchApi<LoginResponse>('/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password }),
-        credentials: 'include',
       });
       
-      if (response && response.success && response.user) {
+      if (response.success && response.user) {
         setUser(response.user);
         toast({
           title: 'Login Successful',
           description: 'Welcome back!',
           variant: 'default',
         });
+        
+        // Invalidate any cached data that may depend on authentication status
+        await queryClient.invalidateQueries();
+        
         return true;
       } else {
         toast({
           title: 'Login Failed',
-          description: response?.message || 'Invalid username or password',
+          description: response.message || 'Invalid username or password',
           variant: 'destructive',
         });
         return false;
@@ -106,11 +127,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = async (): Promise<void> => {
     try {
       setIsLoading(true);
-      await apiRequest<void>('/api/auth/logout', {
+      await fetchApi<void>('/api/auth/logout', {
         method: 'POST',
-        credentials: 'include',
       });
       setUser(null);
+      
+      // Invalidate queries after logout
+      await queryClient.invalidateQueries();
+      
       toast({
         title: 'Logout Successful',
         description: 'You have been logged out.',
