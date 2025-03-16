@@ -233,8 +233,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: parsedBody.data.email,
         phone: parsedBody.data.phone,
         location: parsedBody.data.location,
-        // Map notes from the form to message in the database
-        message: parsedBody.data.notes || "",
+        // Handle both message and notes fields (supporting both form variants)
+        message: parsedBody.data.message || parsedBody.data.notes || "",
         photoUrl: parsedBody.data.photoUrl || "",
         submittedAt: new Date()
       };

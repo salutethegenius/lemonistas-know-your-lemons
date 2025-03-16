@@ -88,7 +88,8 @@ export const selfieFormSchema = insertSelfieSchema.extend({
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Please enter a valid phone number"),
   // Add time field needed by the form
   time: z.string().min(1, "Time is required"),
-  // Add notes field which we'll map to message in the backend
+  // Support both field names (message and notes) for different form variants
+  message: z.string().optional(),
   notes: z.string().optional(),
 });
 
