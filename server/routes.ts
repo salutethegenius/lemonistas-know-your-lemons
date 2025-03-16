@@ -145,6 +145,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Special case: look up by name for the original 4 members
       const nameLower = teamMember.name.toLowerCase().trim();
+      console.log(`DEBUG - Team member name (lowercase): "${nameLower}", ID: ${id}`);
       if (nameLower.includes('gwen')) {
         console.log(`Serving Gwen's image for team member ID: ${id}`);
         return sendTeamMemberImage(path.join(__dirname, "../assets/Gwen.jpg"), res, false, req);
@@ -160,8 +161,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else if (nameLower.includes('karina')) {
         console.log(`Serving Karina's image for team member ID: ${id}`);
         return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Karina.jpg"), res, false, req);
-      } else if (nameLower === 'therrel') {
-        console.log(`Serving Therrel's image for team member ID: ${id}`);
+      } else if (nameLower === 'therrel' || nameLower.includes('delghir')) {
+        console.log(`Serving Delghir's image for team member ID: ${id}`);
         return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Delghir.jpg"), res, false, req);
       } else if (nameLower.includes('nikeia')) {
         console.log(`Serving Nikeia's image for team member ID: ${id}`);
