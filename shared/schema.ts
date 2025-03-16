@@ -86,6 +86,10 @@ export const insertSelfieSchema = createInsertSchema(selfies).omit({
 export const selfieFormSchema = insertSelfieSchema.extend({
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Please enter a valid phone number"),
+  // Add time field needed by the form
+  time: z.string().min(1, "Time is required"),
+  // Add notes field which we'll map to message in the backend
+  notes: z.string().optional(),
 });
 
 export type InsertSelfie = z.infer<typeof insertSelfieSchema>;

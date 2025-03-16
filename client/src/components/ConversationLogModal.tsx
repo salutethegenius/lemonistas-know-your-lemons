@@ -24,7 +24,7 @@ const conversationLogSchema = z.object({
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Please enter a valid phone number"),
   time: z.string().min(1, "Time is required"),
   location: z.string().min(1, "Location is required"),
-  notes: z.string().optional(),
+  message: z.string().optional(),
   photoUrl: z.string().optional(),
 });
 
@@ -43,7 +43,7 @@ export default function ConversationLogModal({ onClose, onSuccess, teamMemberId,
       phone: "",
       time: "",
       location: "",
-      notes: "",
+      message: "",
       photoUrl: "",
     },
   });
@@ -206,12 +206,12 @@ export default function ConversationLogModal({ onClose, onSuccess, teamMemberId,
 
             <FormField
               control={form.control}
-              name="notes"
+              name="message"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Notes</FormLabel>
+                  <FormLabel>Message</FormLabel>
                   <FormControl>
-                    <Input placeholder="Additional notes (optional)" {...field} />
+                    <Input placeholder="Additional message (optional)" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

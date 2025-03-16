@@ -226,14 +226,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Team member not found" });
       }
       
-      // Set defaults for optional fields if not provided
-      // Remove notes from the parsed data since it doesn't exist in our schema
-      const { notes, ...otherData } = parsedBody.data;
-      
+      // Prepare selfie data with the correct fields for our schema
       const selfieData = {
-        ...otherData,
-        // Use notes as the message field
-        message: notes || "",
+        teamMemberId: parsedBody.data.teamMemberId,
+        name: parsedBody.data.name,
+        email: parsedBody.data.email,
+        phone: parsedBody.data.phone,
+        location: parsedBody.data.location,
+        // The form and database now both use 'message'
+        message: parsedBody.data.message || "",
         photoUrl: parsedBody.data.photoUrl || "",
         submittedAt: new Date()
       };
