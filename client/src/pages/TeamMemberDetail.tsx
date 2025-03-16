@@ -247,7 +247,7 @@ export default function TeamMemberDetail() {
                       className="w-full flex items-center justify-center space-x-2 bg-[#FB4694] hover:bg-[#FB4694]/90 text-white py-3 rounded-xl"
                     >
                       <Camera className="h-5 w-5 mr-2" />
-                      <span>Upload Selfie with {member.name || 'Team Member'}</span>
+                      <span>Log Conversation with {member.name || 'Team Member'}</span>
                     </Button>
                   </div>
                 </div>

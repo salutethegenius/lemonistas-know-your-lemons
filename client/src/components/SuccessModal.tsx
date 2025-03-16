@@ -57,9 +57,9 @@ export default function SuccessModal({ onClose }: SuccessModalProps) {
           <div className="w-20 h-20 rounded-full bg-[#FB4694] bg-opacity-20 flex items-center justify-center mx-auto mb-4">
             <Check className="h-10 w-10 text-[#FB4694]" />
           </div>
-          <h2 className="text-2xl font-poppins font-bold mb-2">Application Submitted!</h2>
+          <h2 className="text-2xl font-poppins font-bold mb-2">Conversation Logged!</h2>
           <p className="text-[#7D7B7B]">
-            Thank you for your interest in joining our team of Lemonistas. We'll be in touch soon!
+            Thank you for recording this important interaction. Your contribution helps track our team's impact!
           </p>
         </div>
         
