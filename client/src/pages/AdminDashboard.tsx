@@ -133,6 +133,31 @@ export default function AdminDashboard() {
     }
   });
   
+  // Mutation to delete a selfie/conversation
+  const deleteSelfMutation = useMutation({
+    mutationFn: async (selfieId: number) => {
+      return await apiRequest(
+        "DELETE",
+        `/api/selfies/${selfieId}`
+      );
+    },
+    onSuccess: () => {
+      // Invalidate cache to refresh the selfies list
+      queryClient.invalidateQueries({ queryKey: ["/api/selfies"] });
+      toast({
+        title: "Success",
+        description: "Conversation log deleted successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: `Failed to delete conversation log: ${error}`,
+        variant: "destructive",
+      });
+    }
+  });
+  
   // Mutation to delete a team member
   const deleteMemberMutation = useMutation({
     mutationFn: async (memberId: number) => {
@@ -521,8 +546,16 @@ export default function AdminDashboard() {
                             >
                               View
                             </Button>
-                            <Button variant="destructive" size="sm" className="text-xs">
-                              Delete
+                            <Button 
+                              variant="destructive" 
+                              size="sm" 
+                              className="text-xs"
+                              onClick={() => deleteSelfMutation.mutate(selfie.id)}
+                              disabled={deleteSelfMutation.isPending}
+                            >
+                              {deleteSelfMutation.isPending ? (
+                                <RefreshCcw className="h-3 w-3 mr-1 animate-spin" />
+                              ) : "Delete"}
                             </Button>
                           </div>
                         </CardContent>
@@ -767,8 +800,17 @@ export default function AdminDashboard() {
                 >
                   Close
                 </Button>
-                <Button variant="destructive">
-                  Delete Conversation Log
+                <Button 
+                  variant="destructive"
+                  onClick={() => {
+                    deleteSelfMutation.mutate(viewingSelfie.id);
+                    setViewingSelfie(null);
+                  }}
+                  disabled={deleteSelfMutation.isPending}
+                >
+                  {deleteSelfMutation.isPending ? (
+                    <><RefreshCcw className="h-4 w-4 mr-2 animate-spin" /> Deleting...</>
+                  ) : 'Delete Conversation Log'}
                 </Button>
               </div>
             </CardContent>
