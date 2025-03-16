@@ -187,54 +187,47 @@ export default function AdminDashboard() {
   // Mutation to update a team member
   const updateMemberMutation = useMutation({
     mutationFn: async (data: { id: number, updates: Partial<TeamMember> }) => {
+      // Always use FormData for consistency, whether there's a photo or not
+      const formData = new FormData();
+      
+      // Add all the regular form data
+      Object.entries(data.updates).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value as string);
+        }
+      });
+      
+      // If we have a new photo to upload, add it
       if (selectedPhoto) {
-        // If there's a photo to upload, create a FormData object
-        const formData = new FormData();
+        console.log('Uploading file:', selectedPhoto.name);
         formData.append('photo', selectedPhoto);
-        
-        // Add other member data
-        Object.entries(data.updates).forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
-            formData.append(key, value as string);
+      }
+      
+      try {
+        // Make multipart form request
+        const response = await fetch(`/api/team-members/${data.id}`, {
+          method: 'PUT',
+          body: formData,
+          // Avoid any caching issues
+          headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
           }
         });
         
-        console.log('Uploading file:', selectedPhoto.name);
-        
-        // Ensure we're getting a fresh copy of the file by re-reading it
-        try {
-          // Make multipart form request
-          const response = await fetch(`/api/team-members/${data.id}`, {
-            method: 'PUT',
-            body: formData,
-            // Avoid any caching issues
-            headers: {
-              'Cache-Control': 'no-cache',
-              'Pragma': 'no-cache'
-            }
-          });
-          
-          if (!response.ok) {
-            console.error('Update failed:', await response.text());
-            throw new Error('Failed to update team member');
-          }
-          
-          const result = await response.json();
-          console.log('Update successful:', result);
-          
-          return result;
-        } catch (error) {
-          console.error('Error during file upload:', error);
-          throw error;
+        if (!response.ok) {
+          console.error('Update failed:', await response.text());
+          throw new Error('Failed to update team member');
         }
+        
+        const result = await response.json();
+        console.log('Update successful:', result);
+        
+        return result;
+      } catch (error) {
+        console.error('Error during update:', error);
+        throw error;
       }
-      
-      // No photo upload, just update member data
-      return await apiRequest(
-        "PUT",
-        `/api/team-members/${data.id}`,
-        data.updates
-      );
     },
     onSuccess: (data) => {
       console.log('Member updated successfully:', data);

@@ -478,12 +478,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Prepare update data from form fields
       const updateData: any = { ...req.body };
       
-      // If a file was uploaded, update the imageUrl
+      // Handle the imageUrl field if present
+      if (req.body.imageUrl) {
+        console.log('Using provided image URL:', req.body.imageUrl);
+        updateData.imageUrl = req.body.imageUrl;
+      }
+      
+      // If a file was uploaded, it takes precedence over imageUrl field
       if (req.file) {
         console.log('File uploaded:', req.file.filename);
         // Store the relative path to the file
         updateData.imageUrl = `/attached_assets/${req.file.filename}`;
       }
+      
+      console.log('Updating team member with data:', updateData);
       
       // Update the team member with the request data
       const updatedMember = await storage.updateTeamMember(id, updateData);
