@@ -194,21 +194,7 @@ export default function TeamMemberDetail() {
         <Card className="max-w-4xl mx-auto overflow-hidden">
           <CardContent className="p-0">
             <div className="p-6 md:p-8">
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-2xl md:text-3xl font-poppins font-bold">{member.name}</h2>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="ghost" size="icon" className="rounded-full" onClick={() => shareProfile('linkedin')}>
-                        <Share2 size={18} />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Share Profile</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+              {/* Empty header now, will move name to below the image */}
 
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-2/5">
@@ -224,34 +210,33 @@ export default function TeamMemberDetail() {
                   </div>
 
                   <div className="mt-6">
-                    <h4 className="font-poppins font-semibold mb-4">Connect</h4>
-                    <div className="flex gap-3 mb-6">
-                      {member.email && (
-                        <ShareButton platform="Email" onClick={() => window.open(`mailto:${member.email}`, '_blank')}>
-                          <Mail size={18} />
-                        </ShareButton>
-                      )}
-                      {member.linkedin && (
-                        <ShareButton platform="LinkedIn" onClick={() => window.open(member.linkedin, '_blank')}>
+                    <h2 className="text-2xl md:text-3xl font-poppins font-bold mb-4">{member.name}</h2>
+                    
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="flex gap-3">
+                        {member.email && (
+                          <ShareButton platform="Email" onClick={() => window.open(`mailto:${member.email}`, '_blank')}>
+                            <Mail size={18} />
+                          </ShareButton>
+                        )}
+                        {member.linkedin && (
+                          <ShareButton platform="LinkedIn" onClick={() => window.open(member.linkedin, '_blank')}>
+                            <Linkedin size={18} />
+                          </ShareButton>
+                        )}
+                        <ShareButton platform="LinkedIn" onClick={() => shareProfile('linkedin')}>
                           <Linkedin size={18} />
                         </ShareButton>
-                      )}
-                    </div>
-                    
-                    <h4 className="font-poppins font-semibold mb-4">Share Profile</h4>
-                    <div className="flex gap-3">
-                      <ShareButton platform="LinkedIn" onClick={() => shareProfile('linkedin')}>
-                        <Linkedin size={18} />
-                      </ShareButton>
-                      <ShareButton platform="Twitter" onClick={() => shareProfile('twitter')}>
-                        <Twitter size={18} />
-                      </ShareButton>
-                      <ShareButton platform="Facebook" onClick={() => shareProfile('facebook')}>
-                        <Facebook size={18} />
-                      </ShareButton>
-                      <ShareButton platform="Email" onClick={() => shareProfile('email')}>
-                        <Mail size={18} />
-                      </ShareButton>
+                        <ShareButton platform="Twitter" onClick={() => shareProfile('twitter')}>
+                          <Twitter size={18} />
+                        </ShareButton>
+                        <ShareButton platform="Facebook" onClick={() => shareProfile('facebook')}>
+                          <Facebook size={18} />
+                        </ShareButton>
+                        <ShareButton platform="Email" onClick={() => shareProfile('email')}>
+                          <Mail size={18} />
+                        </ShareButton>
+                      </div>
                     </div>
                   </div>
 
@@ -273,7 +258,6 @@ export default function TeamMemberDetail() {
                       <span className="inline-block w-2 h-2 rounded-full bg-[#FB4694] mr-2"></span>
                       <span className="text-[#7D7B7B]">{member.location}</span>
                     </div>
-                    <p className="text-[#292929] text-lg leading-relaxed">{member.bio}</p>
                   </div>
                 </div>
               </div>
@@ -315,18 +299,15 @@ function TeamMemberDetailSkeleton() {
         <Card className="max-w-4xl mx-auto overflow-hidden">
           <CardContent className="p-0">
             <div className="p-6 md:p-8">
-              <div className="flex justify-between items-start mb-6">
-                <Skeleton className="h-10 w-48" />
-                <Skeleton className="h-10 w-10 rounded-full" />
-              </div>
+              {/* Empty header in skeleton to match actual layout */}
 
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-2/5">
                   <Skeleton className="h-80 w-full rounded-xl aspect-[3/4]" />
                   <div className="mt-6">
-                    <Skeleton className="h-8 w-32 mb-4" />
+                    <Skeleton className="h-10 w-48 mb-4" />
                     <div className="flex gap-3">
-                      {[...Array(4)].map((_, i) => (
+                      {[...Array(6)].map((_, i) => (
                         <Skeleton key={i} className="h-10 w-10 rounded-full" />
                       ))}
                     </div>
@@ -338,9 +319,6 @@ function TeamMemberDetailSkeleton() {
                     <div className="flex items-center mb-4">
                       <Skeleton className="h-6 w-32" />
                     </div>
-                    {[...Array(5)].map((_, i) => (
-                      <Skeleton key={i} className="h-5 w-full mb-2" />
-                    ))}
                   </div>
                 </div>
               </div>
