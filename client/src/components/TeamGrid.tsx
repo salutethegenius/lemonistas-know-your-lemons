@@ -53,8 +53,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
                           </div>
                           <CardContent className="p-4">
                             <h3 className="font-poppins font-semibold text-xl mb-1">{member.name}</h3>
-                            <p className="text-sm text-[#7D7B7B] mb-2">{member.role}</p>
-                            <div className="flex items-center">
+                            <div className="flex items-center mt-2">
                               <span className="inline-block w-2 h-2 rounded-full bg-[#FB4694] mr-2"></span>
                               <span className="text-sm">{member.location}</span>
                             </div>
@@ -84,7 +83,6 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
                           </div>
                           <div>
                             <h4 className="font-semibold text-lg">{member.name}</h4>
-                            <p className="text-xs text-[#7D7B7B]">{member.role}</p>
                           </div>
                         </div>
                         <p className="text-sm text-gray-600 line-clamp-4 mb-2">
@@ -134,8 +132,7 @@ function TeamMemberSkeleton() {
       <Skeleton className="h-64 w-full" />
       <CardContent className="p-4">
         <Skeleton className="h-6 w-24 mb-2" />
-        <Skeleton className="h-4 w-32 mb-3" />
-        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-4 w-20 mt-2" />
       </CardContent>
     </Card>
   );

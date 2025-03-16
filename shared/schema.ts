@@ -25,6 +25,8 @@ export const teamMembers = pgTable("team_members", {
   focus: text("focus").notNull(),
   joined: text("joined").notNull(),
   imageUrl: text("image_url").notNull(),
+  email: text("email"),
+  linkedin: text("linkedin"),
 });
 
 export const insertTeamMemberSchema = createInsertSchema(teamMembers).omit({

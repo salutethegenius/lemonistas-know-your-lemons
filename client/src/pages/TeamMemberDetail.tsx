@@ -104,7 +104,7 @@ export default function TeamMemberDetail() {
     if (!member) return;
 
     const url = window.location.href;
-    const text = `Check out ${member.name}, ${member.role} at Lemonistas!`;
+    const text = `Check out ${member.name} at Lemonistas!`;
     let shareUrl = '';
 
     switch(platform) {
@@ -224,6 +224,20 @@ export default function TeamMemberDetail() {
                   </div>
 
                   <div className="mt-6">
+                    <h4 className="font-poppins font-semibold mb-4">Connect</h4>
+                    <div className="flex gap-3 mb-6">
+                      {member.email && (
+                        <ShareButton platform="Email" onClick={() => window.open(`mailto:${member.email}`, '_blank')}>
+                          <Mail size={18} />
+                        </ShareButton>
+                      )}
+                      {member.linkedin && (
+                        <ShareButton platform="LinkedIn" onClick={() => window.open(member.linkedin, '_blank')}>
+                          <Linkedin size={18} />
+                        </ShareButton>
+                      )}
+                    </div>
+                    
                     <h4 className="font-poppins font-semibold mb-4">Share Profile</h4>
                     <div className="flex gap-3">
                       <ShareButton platform="LinkedIn" onClick={() => shareProfile('linkedin')}>
@@ -255,35 +269,11 @@ export default function TeamMemberDetail() {
 
                 <div className="md:w-3/5">
                   <div className="mb-6">
-                    <h3 className="text-xl font-poppins font-semibold mb-2">{member.role}</h3>
                     <div className="flex items-center mb-4">
                       <span className="inline-block w-2 h-2 rounded-full bg-[#FB4694] mr-2"></span>
                       <span className="text-[#7D7B7B]">{member.location}</span>
                     </div>
                     <p className="text-[#292929] text-lg leading-relaxed">{member.bio}</p>
-                  </div>
-
-                  {/* Connect section with functional links */}
-                  <div className="mt-8">
-                    <h4 className="font-poppins font-semibold mb-4">Connect</h4>
-                    <Button 
-                      variant="outline" 
-                      className="mr-3 bg-white"
-                      onClick={() => member.email && window.open(`mailto:${member.email}`, '_blank')}
-                      disabled={!member.email}
-                    >
-                      <Mail className="h-4 w-4 mr-2" />
-                      Email
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="bg-white"
-                      onClick={() => member.linkedin && window.open(member.linkedin, '_blank')}
-                      disabled={!member.linkedin}
-                    >
-                      <Linkedin className="h-4 w-4 mr-2" />
-                      LinkedIn
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -345,21 +335,12 @@ function TeamMemberDetailSkeleton() {
 
                 <div className="md:w-3/5">
                   <div className="mb-6">
-                    <Skeleton className="h-8 w-36 mb-2" />
                     <div className="flex items-center mb-4">
                       <Skeleton className="h-6 w-32" />
                     </div>
                     {[...Array(5)].map((_, i) => (
                       <Skeleton key={i} className="h-5 w-full mb-2" />
                     ))}
-                  </div>
-
-                  <div className="mt-8">
-                    <Skeleton className="h-8 w-32 mb-4" />
-                    <div className="flex gap-3">
-                      <Skeleton className="h-10 w-24 rounded-md" />
-                      <Skeleton className="h-10 w-28 rounded-md" />
-                    </div>
                   </div>
                 </div>
               </div>

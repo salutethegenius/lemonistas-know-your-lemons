@@ -7,6 +7,8 @@ export interface TeamMember {
   focus: string;
   joined: string;
   imageUrl: string;
+  email?: string;
+  linkedin?: string;
 }
 
 // Helper function to get full image URL for a team member
