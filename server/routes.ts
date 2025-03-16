@@ -206,7 +206,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           
           if (shouldDisableCache) {
             console.log('Serving uploaded file with no-cache headers');
-            return sendTeamMemberImage(possibleLocalFile, res, true); // No cache
+            return sendTeamMemberImage(possibleLocalFile, res, true, req); // No cache
           } else {
             return res.sendFile(possibleLocalFile);
           }
