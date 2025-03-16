@@ -584,16 +584,15 @@ export default function AdminDashboard() {
                   // Only these two fields are needed as per requirements
                 };
                 
-                // If no file is selected, use the image URL from the form
-                if (!selectedPhoto) {
-                  const imageUrl = formData.get('imageUrl') as string;
-                  if (imageUrl && imageUrl !== editingMember.imageUrl) {
-                    updates.imageUrl = imageUrl;
-                  }
+                // Always include the imageUrl field from the form
+                const imageUrl = formData.get('imageUrl') as string;
+                if (imageUrl) {
+                  updates.imageUrl = imageUrl;
                 }
                 
                 console.log('Updating team member:', editingMember.id, 'with updates:', updates, 'and file:', selectedPhoto ? selectedPhoto.name : 'none');
                 
+                // The selected photo is handled in the mutation function
                 updateMemberMutation.mutate({
                   id: editingMember.id,
                   updates

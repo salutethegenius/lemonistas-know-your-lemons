@@ -66,8 +66,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // This is important for handling new members approved from applications
   app.get("/api/team-members/image/:id", async (req: Request, res: Response) => {
     try {
-      // Add cache headers for performance (1 hour cache)
-      res.set('Cache-Control', 'public, max-age=3600');
+      // Use no-cache for team member images to ensure updates are always shown
+      res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.set('Pragma', 'no-cache');
+      res.set('Expires', '0');
       
       // Handle undefined or invalid IDs
       if (!req.params.id || req.params.id === 'undefined') {
