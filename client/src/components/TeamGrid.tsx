@@ -2,12 +2,8 @@ import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TeamMember, getTeamMemberImageUrl } from "@/lib/teamMembers";
-import { UserPlus, ArrowRight } from "lucide-react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
+import { UserPlus } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 
 // Use the centralized image URL function
@@ -35,76 +31,30 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
             // Team member cards with hover effect
             teamMembers.map((member) => (
               <div key={member.id} className="block">
-                <HoverCard openDelay={200} closeDelay={100}>
-                  <HoverCardTrigger asChild>
-                    <div className="relative group">
-                      <Link href={`/team-member/${member.id}`}>
-                        <Card className="team-card transition-all duration-300 bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden cursor-pointer h-full">
-                          <div className="h-80 overflow-hidden">
-                            <img 
-                              src={getTeamMemberImage(member)}
-                              alt={member.name} 
-                              className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                              onError={(e) => {
-                                // Fallback if the image fails to load
-                                e.currentTarget.src = "/attached_assets/Lemonistas card.png";
-                              }}
-                            />
-                          </div>
-                          <CardContent className="p-4">
-                            <h3 className="font-poppins font-semibold text-xl mb-1">{member.name}</h3>
-                            <div className="flex items-center mt-2">
-                              <span className="inline-block w-2 h-2 rounded-full bg-[#FB4694] mr-2"></span>
-                              <span className="text-sm">{member.location}</span>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                      <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="bg-[#FB4694] text-white text-xs rounded-full px-2 py-1 font-medium hover-indicator">
-                          Hover for Info
-                        </div>
+                <div>
+                  <Link href={`/team-member/${member.id}`}>
+                    <Card className="team-card transition-all duration-300 bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden cursor-pointer h-full">
+                      <div className="h-80 overflow-hidden">
+                        <img 
+                          src={getTeamMemberImage(member)}
+                          alt={member.name} 
+                          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          onError={(e) => {
+                            // Fallback if the image fails to load
+                            e.currentTarget.src = "/attached_assets/Lemonistas card.png";
+                          }}
+                        />
                       </div>
-                    </div>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80 p-0 shadow-lg rounded-xl border border-gray-100 bg-white animation-fade-in hover-card-content">
-                    <div className="flex flex-col">
-                      <div className="p-6 pb-3">
-                        <div className="flex items-center mb-3">
-                          <div className="w-12 h-12 rounded-full overflow-hidden mr-4 ring-2 ring-[#FB4694]/20">
-                            <img 
-                              src={getTeamMemberImage(member)} 
-                              alt={member.name}
-                              className="w-full h-full object-cover"
-                              onError={(e) => {
-                                e.currentTarget.src = "/attached_assets/Lemonistas card.png";
-                              }}
-                            />
-                          </div>
-                          <div>
-                            <h4 className="font-semibold text-lg">{member.name}</h4>
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-600 line-clamp-4 mb-2">
-                          {member.bio || `${member.name} is a dedicated educator with the Lemonistas team focused on breast health education in the Bahamas.`}
-                        </p>
-                        <div className="flex items-center mt-2 text-xs text-gray-500">
+                      <CardContent className="p-4">
+                        <h3 className="font-poppins font-semibold text-xl mb-1">{member.name}</h3>
+                        <div className="flex items-center mt-2">
                           <span className="inline-block w-2 h-2 rounded-full bg-[#FB4694] mr-2"></span>
-                          {member.location}
+                          <span className="text-sm">{member.location}</span>
                         </div>
-                      </div>
-                      
-                      <div className="border-t border-gray-100 p-3 bg-gray-50 flex justify-between items-center rounded-b-xl">
-                        <span className="text-xs text-gray-500">Joined: {member.joined || 'The Lemonistas'}</span>
-                        <Link href={`/team-member/${member.id}`}>
-                          <Button variant="link" size="sm" className="text-xs p-0 h-auto flex items-center text-[#FB4694]">
-                            View Profile <ArrowRight className="ml-1 h-3 w-3" />
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                </div>
               </div>
             ))
           )}
