@@ -84,7 +84,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!teamMember) {
         console.log(`Team member not found with ID: ${id}`);
         // Return default image with cache headers instead of 404
-        const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
+        const defaultImagePath = path.join(__dirname, "../attached_assets/Lemonistas card.png");
         if (fs.existsSync(defaultImagePath)) {
           return res.sendFile(defaultImagePath);
         }
@@ -138,7 +138,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // If no valid image URL is available, send a default image
       console.log(`No valid image URL found, serving default image`);
-      const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
+      const defaultImagePath = path.join(__dirname, "../attached_assets/Lemonistas card.png");
       if (fs.existsSync(defaultImagePath)) {
         return res.sendFile(defaultImagePath);
       }
@@ -150,7 +150,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error fetching team member image:", error);
       
       // Even on error, try to return a default image
-      const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
+      const defaultImagePath = path.join(__dirname, "../attached_assets/Lemonistas card.png");
       if (fs.existsSync(defaultImagePath)) {
         return res.sendFile(defaultImagePath);
       }
@@ -233,8 +233,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         email: parsedBody.data.email,
         phone: parsedBody.data.phone,
         location: parsedBody.data.location,
-        // The form and database now both use 'message'
-        message: parsedBody.data.message || "",
+        // Map notes from the form to message in the database
+        message: parsedBody.data.notes || "",
         photoUrl: parsedBody.data.photoUrl || "",
         submittedAt: new Date()
       };
@@ -325,7 +325,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         bio: applicant.whyJoin,
         focus: "Health Education",
         joined: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
-        imageUrl: applicant.photoUrl || ""
+        imageUrl: applicant.photoUrl || "/attached_assets/Lemonistas card.png"
       });
 
       // Mark the applicant as approved
