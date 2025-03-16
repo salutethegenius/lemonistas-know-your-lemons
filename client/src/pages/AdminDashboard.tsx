@@ -428,7 +428,7 @@ export default function AdminDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
-                  <span>User Selfies</span>
+                  <span>Conversation Logs</span>
                   <Button variant="outline" className="bg-white">
                     <Download className="h-4 w-4 mr-2" />
                     Export All
@@ -458,14 +458,14 @@ export default function AdminDashboard() {
                           )}
                         </div>
                         <CardContent className="p-4">
-                          <h3 className="font-semibold text-lg mb-1">Selfie #{selfie.id}</h3>
+                          <h3 className="font-semibold text-lg mb-1">Conversation #{selfie.id}</h3>
                           <p className="text-sm text-[#7D7B7B] mb-2">{selfie.location}</p>
-                          <p className="text-sm mb-3">{selfie.caption}</p>
+                          <p className="text-sm mb-3">{selfie.name}</p>
                           <p className="text-xs text-gray-500">
-                            Taken with Team Member #{selfie.teamMemberId}
+                            With Team Member #{selfie.teamMemberId}
                           </p>
                           <p className="text-xs text-gray-500 mb-4">
-                            {formatDate(selfie.createdAt)}
+                            {formatDate(selfie.submittedAt)}
                           </p>
                           <div className="flex gap-2">
                             <Button 
@@ -486,7 +486,7 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   <div className="text-center py-8 text-gray-500">
-                    <p>No selfies uploaded yet.</p>
+                    <p>No conversation logs recorded yet.</p>
                   </div>
                 )}
               </CardContent>
@@ -656,12 +656,12 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Selfie Details Modal */}
+      {/* Conversation Log Details Modal */}
       {viewingSelfie && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <Card className="w-full max-w-lg mx-auto">
             <CardHeader>
-              <CardTitle className="text-lg">Selfie Details</CardTitle>
+              <CardTitle className="text-lg">Conversation Log Details</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-6">
@@ -681,14 +681,26 @@ export default function AdminDashboard() {
                 <div className="space-y-4">
                   <div>
                     <h3 className="font-bold text-xl">
-                      Selfie #{viewingSelfie.id}
+                      Conversation Log #{viewingSelfie.id}
                     </h3>
                     <p className="text-gray-500">{viewingSelfie.location}</p>
                   </div>
                   
                   <div>
-                    <p className="text-sm font-medium">Caption</p>
-                    <p className="text-sm mt-1">{viewingSelfie.caption}</p>
+                    <p className="text-sm font-medium">Contact Info</p>
+                    <p className="text-sm mt-1">{viewingSelfie.name}</p>
+                    <p className="text-sm mt-1">{viewingSelfie.email}</p>
+                    <p className="text-sm mt-1">{viewingSelfie.phone}</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-sm font-medium">Time</p>
+                    <p className="text-sm mt-1">{viewingSelfie.time}</p>
+                  </div>
+                  
+                  <div>
+                    <p className="text-sm font-medium">Notes</p>
+                    <p className="text-sm mt-1">{viewingSelfie.notes || "No notes provided"}</p>
                   </div>
                   
                   <div>
@@ -697,8 +709,8 @@ export default function AdminDashboard() {
                   </div>
                   
                   <div>
-                    <p className="text-sm font-medium">Uploaded On</p>
-                    <p className="text-sm mt-1">{formatDate(viewingSelfie.createdAt)}</p>
+                    <p className="text-sm font-medium">Submitted On</p>
+                    <p className="text-sm mt-1">{formatDate(viewingSelfie.submittedAt)}</p>
                   </div>
                 </div>
               </div>
@@ -711,7 +723,7 @@ export default function AdminDashboard() {
                   Close
                 </Button>
                 <Button variant="destructive">
-                  Delete Selfie
+                  Delete Conversation Log
                 </Button>
               </div>
             </CardContent>
