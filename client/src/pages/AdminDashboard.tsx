@@ -267,7 +267,39 @@ export default function AdminDashboard() {
               <CardHeader>
                 <CardTitle className="flex justify-between items-center">
                   <span>Team Members</span>
-                  <Button variant="outline" className="bg-white">
+                  <Button 
+                    variant="outline" 
+                    className="bg-white"
+                    onClick={() => {
+                      const newMember = {
+                        name: "New Team Member",
+                        location: "Nassau, Bahamas",
+                        role: "Team Member",
+                        bio: "Team member bio",
+                        focus: "Breast health education",
+                        joined: new Date().toISOString().split('T')[0],
+                        imageUrl: "/attached_assets/Lemonistas card.png"
+                      };
+                      
+                      apiRequest('POST', '/api/team-members', newMember)
+                        .then(() => {
+                          queryClient.invalidateQueries({ queryKey: ["/api/team-members"] });
+                          toast({
+                            title: "Success",
+                            description: "New team member added. You can edit their details now.",
+                            variant: "default",
+                          });
+                        })
+                        .catch(error => {
+                          console.error("Failed to add team member:", error);
+                          toast({
+                            title: "Error",
+                            description: "Failed to add team member. Please try again.",
+                            variant: "destructive",
+                          });
+                        });
+                    }}
+                  >
                     <UserPlus className="h-4 w-4 mr-2" />
                     Add Team Member
                   </Button>
