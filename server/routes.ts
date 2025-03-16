@@ -396,8 +396,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Reject an applicant
-  app.post("/api/applicants/:id/reject", async (req: Request, res: Response) => {
+  // Reject an applicant - protected
+  app.post("/api/applicants/:id/reject", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -423,8 +423,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Delete a team member
-  app.delete("/api/team-members/:id", async (req: Request, res: Response) => {
+  // Delete a team member - protected
+  app.delete("/api/team-members/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -450,8 +450,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Delete a selfie (conversation)
-  app.delete("/api/selfies/:id", async (req: Request, res: Response) => {
+  // Delete a selfie (conversation) - protected
+  app.delete("/api/selfies/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -477,8 +477,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Update a team member - handle file uploads with multer
-  app.put("/api/team-members/:id", upload.single('photo'), async (req: Request, res: Response) => {
+  // Update a team member - handle file uploads with multer - protected
+  app.put("/api/team-members/:id", isAuthenticated, upload.single('photo'), async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {

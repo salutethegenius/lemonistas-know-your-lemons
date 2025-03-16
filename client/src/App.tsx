@@ -6,6 +6,8 @@ import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import TeamMemberDetail from "@/pages/TeamMemberDetail";
 import AdminDashboard from "@/pages/AdminDashboard";
+import Login from "@/pages/Login";
+import { AuthProvider } from "./context/AuthContext";
 
 function Router() {
   return (
@@ -13,6 +15,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/team-member/:id" component={TeamMemberDetail} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/login" component={Login} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -21,8 +24,10 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Router />
-      <Toaster />
+      <AuthProvider>
+        <Router />
+        <Toaster />
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
