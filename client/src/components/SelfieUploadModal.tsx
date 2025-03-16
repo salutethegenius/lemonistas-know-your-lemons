@@ -22,10 +22,9 @@ const selfieUploadSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().regex(/^\+?[0-9]{10,15}$/, "Please enter a valid phone number"),
-  // These fields will still be in the database schema but optional in the form
-  message: z.string().optional(),
-  location: z.string().optional(),
-  caption: z.string().optional(),
+  time: z.string().min(1, "Time is required"),
+  location: z.string().min(1, "Location is required"),
+  notes: z.string().optional(),
   photoUrl: z.string().optional(),
 });
 
@@ -42,9 +41,9 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
       name: "",
       email: "",
       phone: "",
-      message: "",
+      time: "",
       location: "",
-      caption: "",
+      notes: "",
       photoUrl: "",
     },
   });
@@ -101,7 +100,7 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md relative overflow-hidden">
         <div className="bg-[#FFFE77] p-4 flex justify-between items-center">
-          <h2 className="text-xl font-poppins font-bold text-[#292929]">Selfie with {teamMemberName}</h2>
+          <h2 className="text-xl font-poppins font-bold text-[#292929]">Conversation or Teaching Session</h2>
           <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
             <X className="h-5 w-5" />
           </Button>
@@ -130,7 +129,7 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
                 <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center border-4 border-dashed border-gray-300">
                   <label className="cursor-pointer p-2 flex flex-col items-center">
                     <Camera className="h-10 w-10 text-gray-400 mb-2" />
-                    <span className="text-xs text-gray-500 text-center">Click to upload selfie</span>
+                    <span className="text-xs text-gray-500 text-center">Upload Picture (Optional)</span>
                     <input 
                       type="file" 
                       accept="image/*" 
@@ -184,10 +183,47 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
               )}
             />
 
-            {/* Hidden fields with default values */}
-            <input type="hidden" {...form.register("message")} value="" />
-            <input type="hidden" {...form.register("location")} value="" />
-            <input type="hidden" {...form.register("caption")} value="" />
+            <FormField
+              control={form.control}
+              name="time"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Time</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter the time" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter the location" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="notes"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Notes</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Additional notes (optional)" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <div className="pt-4 flex justify-end gap-2">
               <Button type="button" variant="outline" onClick={onClose}>
@@ -198,7 +234,7 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
                 disabled={mutation.isPending}
                 className="bg-[#FB4694] hover:bg-[#FB4694]/80"
               >
-                {mutation.isPending ? "Uploading..." : "Upload Selfie"}
+                {mutation.isPending ? "Submitting..." : "Submit"}
               </Button>
             </div>
           </form>
