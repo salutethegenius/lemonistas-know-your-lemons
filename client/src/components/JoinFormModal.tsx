@@ -102,7 +102,12 @@ export default function JoinFormModal({ onClose, onSuccess }: JoinFormModalProps
               <div className="flex flex-col items-center mb-6">
                 <div className="w-40 h-40 rounded-full bg-gray-200 flex items-center justify-center mb-4 overflow-hidden">
                   {photoPreview ? (
-                    <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+                    <img 
+                      src={photoPreview} 
+                      alt="Preview" 
+                      className="w-full h-full object-cover" 
+                      style={{ objectPosition: 'center' }}
+                    />
                   ) : (
                     <User className="h-16 w-16 text-gray-400" />
                   )}

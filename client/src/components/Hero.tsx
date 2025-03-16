@@ -12,7 +12,8 @@ export default function Hero({ onJoinClick }: HeroProps) {
             <img 
               src="/src/images/Asset-4.webp" 
               alt="Mammogram Access Program" 
-              className="h-16 sm:h-20 md:h-24 w-auto"
+              className="h-16 sm:h-20 md:h-24 w-auto object-contain"
+              style={{ objectPosition: 'center' }}
               width="240"
               height="120"
               fetchPriority="high"
