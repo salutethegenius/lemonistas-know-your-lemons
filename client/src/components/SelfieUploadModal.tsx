@@ -107,8 +107,7 @@ export default function SelfieUploadModal({ onClose, onSuccess, teamMemberId, te
                   <img 
                     src={photoPreview} 
                     alt="Photo preview" 
-                    className="w-full h-full object-cover" 
-                    style={{ objectPosition: 'center' }}
+                    className="img-centered" 
                   />
                   <Button
                     type="button"

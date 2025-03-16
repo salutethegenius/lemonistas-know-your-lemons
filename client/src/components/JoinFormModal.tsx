@@ -105,8 +105,7 @@ export default function JoinFormModal({ onClose, onSuccess }: JoinFormModalProps
                     <img 
                       src={photoPreview} 
                       alt="Preview" 
-                      className="w-full h-full object-cover" 
-                      style={{ objectPosition: 'center' }}
+                      className="img-centered" 
                     />
                   ) : (
                     <User className="h-16 w-16 text-gray-400" />

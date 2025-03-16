@@ -88,6 +88,117 @@
         ]
       }
     </script>
+    
+    <!-- Structured Data - Team Page -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Our Team - Lemonistas Bahamas",
+        "description": "Meet our dedicated team of breast health educators working across The Bahamas to improve health awareness.",
+        "url": "https://lemonistas.replit.app/#team",
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": [".team-section h2", ".team-section .team-description"]
+        },
+        "mainEntity": {
+          "@type": "Organization",
+          "name": "Lemonistas Team",
+          "description": "Passionate educators dedicated to breast health awareness across The Bahamas.",
+          "member": [
+            {
+              "@type": "Person",
+              "name": "Gwen Nottage",
+              "jobTitle": "President, Know Your Lemons (Bahamas)",
+              "description": "Leading breast health education initiatives across The Bahamas"
+            },
+            {
+              "@type": "Person",
+              "name": "Ivalee Sinclair",
+              "jobTitle": "Breast Health Educator",
+              "description": "Specializing in community outreach and awareness programs"
+            },
+            {
+              "@type": "Person",
+              "name": "Portia Ebraim",
+              "jobTitle": "Breast Health Educator",
+              "description": "Expert in healthcare education and community support"
+            },
+            {
+              "@type": "Person",
+              "name": "Sam Adderley",
+              "jobTitle": "Breast Health Educator",
+              "description": "Leading workshops and training sessions throughout the islands"
+            }
+          ]
+        },
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://lemonistas.replit.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Meet Our Team",
+              "item": "https://lemonistas.replit.app/#team"
+            }
+          ]
+        }
+      }
+    </script>
+    
+    <!-- Structured Data - Team Member Profile Page Template -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        "name": "Team Member Profile - Lemonistas Bahamas",
+        "description": "Learn more about our dedicated breast health educators and their work across The Bahamas.",
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": [".member-profile h1", ".member-profile .bio"]
+        },
+        "mainEntity": {
+          "@type": "Person",
+          "name": "Lemonista Team Member",
+          "description": "Dedicated breast health educator in The Bahamas",
+          "knowsAbout": ["Breast Health Education", "Cancer Awareness", "Community Outreach", "Health Education"],
+          "memberOf": {
+            "@type": "Organization",
+            "name": "Lemonistas Bahamas",
+            "url": "https://lemonistas.replit.app/"
+          }
+        },
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Home",
+              "item": "https://lemonistas.replit.app/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Meet Our Team",
+              "item": "https://lemonistas.replit.app/#team"
+            },
+            {
+              "@type": "ListItem",
+              "position": 3,
+              "name": "Team Member Profile",
+              "item": "https://lemonistas.replit.app/team-member/1"
+            }
+          ]
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
