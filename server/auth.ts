@@ -40,7 +40,11 @@ export async function login(req: Request, res: Response) {
     (req.session as any).authenticated = true;
     (req.session as any).user = { username };
     
-    return res.status(200).json({ message: "Login successful" });
+    return res.status(200).json({ 
+      success: true,
+      message: "Login successful",
+      user: { username }
+    });
   }
   
   // Try to find user in database as fallback
@@ -52,7 +56,11 @@ export async function login(req: Request, res: Response) {
       (req.session as any).authenticated = true;
       (req.session as any).user = { username: user.username };
       
-      return res.status(200).json({ message: "Login successful" });
+      return res.status(200).json({ 
+        success: true,
+        message: "Login successful",
+        user: { username: user.username }
+      });
     }
   } catch (error) {
     console.error("Database login error:", error);
