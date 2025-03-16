@@ -1,13 +1,37 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
+import cookieParser from "cookie-parser";
+import MemoryStore from "memorystore";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { seedTeamMembers } from "./seed";
+import { createAdminUser } from "./auth";
 
 const app = express();
 // Increase JSON body size limit to 50MB for image uploads
 app.use(express.json({ limit: '50mb' }));
 // Increase URL-encoded body size limit to 50MB
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
+// Use cookie parser
+app.use(cookieParser());
+
+// Configure session storage
+const SessionStore = MemoryStore(session);
+app.use(
+  session({
+    secret: 'lemons-bahamas-session-secret',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    },
+    store: new SessionStore({
+      checkPeriod: 86400000 // 24 hours in milliseconds
+    })
+  })
+);
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -43,6 +67,8 @@ app.use((req, res, next) => {
   // Seed the database with initial team members
   try {
     await seedTeamMembers();
+    // Create admin user if it doesn't exist
+    await createAdminUser();
   } catch (error) {
     log(`Error seeding database: ${error instanceof Error ? error.message : String(error)}`);
   }
