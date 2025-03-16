@@ -33,7 +33,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
               <article key={member.id} className="h-full">
                 <Link href={`/team-member/${member.id}`} className="block h-full">
                   <Card className="team-card transition-all duration-300 bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden cursor-pointer h-full">
-                    <div className="h-64 sm:h-72 md:h-80 overflow-hidden">
+                    <div className="h-80 sm:h-96 md:h-80 overflow-hidden">
                       <img 
                         src={getTeamMemberImage(member)}
                         alt={`${member.name}, ${member.role}`} 
@@ -65,7 +65,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
           {/* Join Our Team card with accessibility improvements */}
           <div className="h-full">
             <Card 
-              className="team-card bg-white rounded-xl shadow-md overflow-hidden border-2 border-dashed border-gray-300 flex flex-col items-center justify-center p-6 h-full min-h-[300px] cursor-pointer hover:bg-gray-50 transition-colors duration-300"
+              className="team-card bg-white rounded-xl shadow-md overflow-hidden border-2 border-dashed border-gray-300 flex flex-col items-center justify-center p-6 h-full min-h-[320px] sm:min-h-[400px] md:min-h-[350px] cursor-pointer hover:bg-gray-50 transition-colors duration-300"
               onClick={onJoinClick}
               role="button"
               tabIndex={0}
@@ -93,7 +93,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
 function TeamMemberSkeleton() {
   return (
     <Card className="rounded-xl shadow-md overflow-hidden h-full">
-      <Skeleton className="h-80 w-full" />
+      <Skeleton className="h-80 sm:h-96 md:h-80 w-full" />
       <CardContent className="p-4">
         <Skeleton className="h-6 w-24 mb-2" />
         <Skeleton className="h-4 w-20 mt-2" />
