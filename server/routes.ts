@@ -6,6 +6,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import upload from './utils/upload';
+import { login, logout, checkAuthStatus, isAuthenticated } from "./auth";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -332,36 +333,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get all applicants for admin dashboard
-  app.get("/api/applicants", async (req: Request, res: Response) => {
-    try {
-      // Check if we want pending only or all applicants
-      const showAll = req.query.all === 'true';
-      
-      let applicants;
-      if (showAll) {
-        applicants = await storage.getAllApplicants();
-      } else {
-        applicants = await storage.getPendingApplicants();
-      }
-      
-      res.json(applicants);
-    } catch (error) {
-      console.error("Error fetching applicants:", error);
-      res.status(500).json({ message: "Error fetching applicants" });
-    }
-  });
-  
-  // Get all selfies for admin dashboard
-  app.get("/api/selfies", async (req: Request, res: Response) => {
-    try {
-      const selfies = await storage.getAllSelfies();
-      res.json(selfies);
-    } catch (error) {
-      console.error("Error fetching selfies:", error);
-      res.status(500).json({ message: "Error fetching selfies" });
-    }
-  });
+  // Get all applicants and selfies are now protected routes - see bottom of file
   
   // Get selfies for a specific team member
   app.get("/api/team-members/:id/selfies", async (req: Request, res: Response) => {
@@ -385,8 +357,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Approve an applicant to become a team member
-  app.post("/api/applicants/:id/approve", async (req: Request, res: Response) => {
+  // Approve an applicant to become a team member - protected
+  app.post("/api/applicants/:id/approve", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const id = parseInt(req.params.id);
       if (isNaN(id)) {
@@ -548,6 +520,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error updating team member:", error);
       res.status(500).json({ message: "Error updating team member" });
+    }
+  });
+
+  // Authentication routes
+  app.post("/api/auth/login", login);
+  app.post("/api/auth/logout", logout);
+  app.get("/api/auth/status", checkAuthStatus);
+  
+  // Protected admin routes - require authentication
+  app.get("/api/applicants", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      // Check if we want pending only or all applicants
+      const showAll = req.query.all === 'true';
+      
+      let applicants;
+      if (showAll) {
+        applicants = await storage.getAllApplicants();
+      } else {
+        applicants = await storage.getPendingApplicants();
+      }
+      
+      res.json(applicants);
+    } catch (error) {
+      console.error("Error fetching applicants:", error);
+      res.status(500).json({ message: "Error fetching applicants" });
+    }
+  });
+  
+  // Get all selfies for admin dashboard - protected
+  app.get("/api/selfies", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const selfies = await storage.getAllSelfies();
+      res.json(selfies);
+    } catch (error) {
+      console.error("Error fetching selfies:", error);
+      res.status(500).json({ message: "Error fetching selfies" });
     }
   });
 
