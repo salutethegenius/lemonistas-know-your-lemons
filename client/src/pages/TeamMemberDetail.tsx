@@ -216,7 +216,7 @@ export default function TeamMemberDetail() {
                     <img 
                       src={getTeamMemberImageUrl(member)}
                       alt={member.name} 
-                      className="w-full h-auto object-cover aspect-square"
+                      className="w-full h-auto object-cover aspect-[3/4]"
                       onError={(e) => {
                         e.currentTarget.src = "/attached_assets/Lemonistas card.png";
                       }}
@@ -322,7 +322,7 @@ function TeamMemberDetailSkeleton() {
 
               <div className="flex flex-col md:flex-row gap-8">
                 <div className="md:w-2/5">
-                  <Skeleton className="h-80 w-full rounded-xl aspect-square" />
+                  <Skeleton className="h-80 w-full rounded-xl aspect-[3/4]" />
                   <div className="mt-6">
                     <Skeleton className="h-8 w-32 mb-4" />
                     <div className="flex gap-3">

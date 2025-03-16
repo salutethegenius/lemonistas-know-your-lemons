@@ -40,7 +40,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
                     <div className="relative group">
                       <Link href={`/team-member/${member.id}`}>
                         <Card className="team-card transition-all duration-300 bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden cursor-pointer h-full">
-                          <div className="h-64 overflow-hidden">
+                          <div className="h-80 overflow-hidden">
                             <img 
                               src={getTeamMemberImage(member)}
                               alt={member.name} 
@@ -129,7 +129,7 @@ export default function TeamGrid({ teamMembers, isLoading, onJoinClick }: TeamGr
 function TeamMemberSkeleton() {
   return (
     <Card className="rounded-xl shadow-md overflow-hidden h-full">
-      <Skeleton className="h-64 w-full" />
+      <Skeleton className="h-80 w-full" />
       <CardContent className="p-4">
         <Skeleton className="h-6 w-24 mb-2" />
         <Skeleton className="h-4 w-20 mt-2" />
