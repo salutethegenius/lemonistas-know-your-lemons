@@ -10,7 +10,7 @@ export default function Hero({ onJoinClick }: HeroProps) {
           {/* Mammogram Access Program Logo */}
           <div className="mb-6 md:mb-8">
             <img 
-              src="/attached_assets/Asset-4.webp" 
+              src="/src/images/Asset-4.webp" 
               alt="Mammogram Access Program" 
               className="h-16 sm:h-20 md:h-24 w-auto"
               width="240"
