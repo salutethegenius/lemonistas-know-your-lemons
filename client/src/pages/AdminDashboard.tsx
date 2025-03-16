@@ -255,7 +255,7 @@ export default function AdminDashboard() {
             </TabsTrigger>
             <TabsTrigger value="selfies" className="flex items-center">
               <CheckCircle2 className="h-4 w-4 mr-2" />
-              Selfies
+              Conversation Logs
               {selfies && selfies.length > 0 && (
                 <Badge className="ml-2 bg-[#FB4694]">{selfies.length}</Badge>
               )}
@@ -448,7 +448,7 @@ export default function AdminDashboard() {
                           {selfie.photoUrl ? (
                             <img
                               src={selfie.photoUrl}
-                              alt={`Selfie ${selfie.id}`}
+                              alt={`Conversation Log ${selfie.id}`}
                               className="w-full h-full object-cover"
                             />
                           ) : (
@@ -669,7 +669,7 @@ export default function AdminDashboard() {
                   {viewingSelfie.photoUrl ? (
                     <img 
                       src={viewingSelfie.photoUrl} 
-                      alt={`Selfie ${viewingSelfie.id}`}
+                      alt={`Conversation Log ${viewingSelfie.id}`}
                       className="rounded-md w-full max-h-[400px] object-contain mx-auto"
                     />
                   ) : (
