@@ -161,13 +161,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return sendTeamMemberImage(path.join(__dirname, "../assets/Sam (1).jpg"), res, false, req);
       } else if (nameLower.includes('karina')) {
         console.log(`Serving Karina's image for team member ID: ${id}`);
-        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Karina.jpg"), res, false, req);
+        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/8.jpeg"), res, false, req);
       } else if (nameLower === 'therrel' || nameLower.includes('delghir')) {
         console.log(`Serving Delghir's image for team member ID: ${id}`);
-        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/Delghir.jpg"), res, false, req);
+        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/16.jpeg"), res, false, req);
       } else if (nameLower.includes('nikeia')) {
         console.log(`Serving Nikeia's image for team member ID: ${id}`);
-        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/nikeia.jpeg"), res, false, req);
+        return sendTeamMemberImage(path.join(__dirname, "../client/src/images/9.jpeg"), res, false, req);
       } else if (nameLower.includes('monisha')) {
         console.log(`Serving Monisha's image for team member ID: ${id}`);
         
