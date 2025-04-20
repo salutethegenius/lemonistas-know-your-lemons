@@ -1,0 +1,19 @@
+# Node.js
+node_modules/
+npm-debug.log
+npm-debug.log.*
+node_reply/
+.nvm
+
+# Vite
+.vite/
+.npt/
+dist/
+dist-ssr/
+*.local
+# Local env files
+.env
+
+# Editor directories and files
+.vscode/
+.idea/
