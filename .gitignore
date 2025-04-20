@@ -2,12 +2,18 @@
 node_modules
 /.pnp
 .pnp.js
+node_reply/
+.nvm
 
 # Build files
 /dist
 /build
+dist/
+dist-ssr/
 build.js
 build.js.map
+.vite/
+.npt/
 
 # Development files
 .env
@@ -15,6 +21,7 @@ build.js.map
 .env.development.local
 .env.test.local
 .env.production.local
+*.local
 
 # Cache
 .npm
@@ -29,6 +36,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+npm-debug.log.*
 
 # Editor directories and files
 .vscode/*
