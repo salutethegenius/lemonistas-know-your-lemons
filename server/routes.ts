@@ -555,6 +555,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/team-members/:id/image", async (req, res) => {
     try {
       const memberId = parseInt(req.params.id);
+      
+      if (isNaN(memberId)) {
+        return res.status(400).json({ message: "Invalid team member ID" });
+      }
+
+      // Redirect to the main image endpoint
+      return res.redirect(`/api/team-members/image/${memberId}`);
+    } catch (error) {
+      console.error("Error with team member image redirect:", error);
+      res.status(500).json({ message: "Error fetching team member image" });
+    }
+  });
 
   const httpServer = createServer(app);
   return httpServer;
