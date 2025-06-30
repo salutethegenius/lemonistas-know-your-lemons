@@ -15,10 +15,10 @@ export default function Hero({ onJoinClick }: HeroProps) {
               className="h-16 sm:h-20 md:h-24 w-auto object-contain img-centered"
               width="240"
               height="120"
-              fetchPriority="high"
+              fetchpriority="high"
             />
           </div>
-          
+
           <div className="text-center mb-6 md:mb-8">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-poppins text-white mb-3 md:mb-4" id="hero-heading">
               Meet Our Lemonistas
