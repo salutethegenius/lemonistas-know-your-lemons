@@ -8,6 +8,7 @@ import TeamMemberDetail from "@/pages/TeamMemberDetail";
 import AdminDashboard from "@/pages/AdminDashboard";
 import Login from "@/pages/Login";
 import { AuthProvider } from "./context/AuthContext";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 function Router() {
   return (
@@ -23,12 +24,14 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router />
-        <Toaster />
-      </AuthProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <Router />
+          <Toaster />
+        </AuthProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 

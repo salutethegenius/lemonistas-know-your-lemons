@@ -19,7 +19,7 @@ app.use(cookieParser());
 const SessionStore = MemoryStore(session);
 app.use(
   session({
-    secret: 'lemons-bahamas-session-secret',
+    secret: process.env.SESSION_SECRET || 'lemons-bahamas-session-secret',
     resave: false,
     saveUninitialized: false,
     cookie: {

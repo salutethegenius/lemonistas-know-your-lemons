@@ -91,7 +91,13 @@ export const selfieFormSchema = insertSelfieSchema.extend({
   // Support both field names (message and notes) for different form variants
   message: z.string().optional(),
   notes: z.string().optional(),
-});
+}).refine(
+  (data) => data.message || data.notes,
+  {
+    message: "Either message or notes is required",
+    path: ["message"]
+  }
+);
 
 export type InsertSelfie = z.infer<typeof insertSelfieSchema>;
 export type Selfie = typeof selfies.$inferSelect;

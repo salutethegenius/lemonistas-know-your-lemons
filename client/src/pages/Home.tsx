@@ -16,11 +16,14 @@ export default function Home() {
   const teamSectionRef = useRef<HTMLDivElement>(null);
 
   // Optimized query with caching and error handling
-  const { data: teamMembers, isLoading } = useQuery<TeamMember[]>({
+  const { data: teamMembers, isLoading, error } = useQuery<TeamMember[]>({
     queryKey: ["/api/team-members"],
-    staleTime: 5 * 60 * 1000, // 5 minutes cache before refetching
-    retry: 2,
-    refetchOnWindowFocus: false
+    staleTime: 10 * 60 * 1000, // 10 minutes cache before refetching
+    gcTime: 30 * 60 * 1000, // 30 minutes garbage collection time
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+    refetchOnWindowFocus: false,
+    refetchOnMount: false
   });
 
   const handleOpenJoinForm = () => {
@@ -44,6 +47,33 @@ export default function Home() {
   const scrollToTeamSection = () => {
     teamSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading team members...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Failed to load team members</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#F8F6F4] font-montserrat text-[#292929] min-h-screen">

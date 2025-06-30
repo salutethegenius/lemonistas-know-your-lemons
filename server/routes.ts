@@ -97,19 +97,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Generic route to handle any team member images by ID
-  // This is important for handling new members approved from applications
   app.get("/api/team-members/image/:id", async (req: Request, res: Response) => {
     try {
-      // Use caching for improved performance (30 days for better performance)
-      // Only disable cache for specific team members that need frequent updates
-      const teamMembersWithoutCache = [10]; // Monisha's ID is 10 based on logs
+      const id = parseInt(req.params.id);
       
-      // Handle undefined or invalid IDs
-      if (!req.params.id || req.params.id === 'undefined') {
-        // Send a default image instead of an error
+      // Handle invalid IDs
+      if (isNaN(id) || !req.params.id || req.params.id === 'undefined') {
         const defaultImagePath = path.join(__dirname, "../assets/default-profile.svg");
         if (fs.existsSync(defaultImagePath)) {
-          res.set('Cache-Control', 'public, max-age=2592000'); // 30 days
+          res.set('Cache-Control', 'public, max-age=86400'); // 1 day
+          res.setHeader('Content-Type', 'image/svg+xml');
           return res.sendFile(defaultImagePath);
         }
         return res.status(400).json({ message: "Invalid team member ID" });
