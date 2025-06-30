@@ -112,11 +112,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Invalid team member ID" });
       }
       
-      const id = parseInt(req.params.id);
-      if (isNaN(id)) {
-        return res.status(400).json({ message: "Invalid team member ID" });
-      }
-      
       const teamMember = await storage.getTeamMember(id);
       if (!teamMember) {
         // Return default image with cache headers instead of 404
